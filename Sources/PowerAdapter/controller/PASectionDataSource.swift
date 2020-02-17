@@ -1,0 +1,68 @@
+//
+//  File.swift
+//  
+//
+//  Created by Prashant Rathore on 17/02/20.
+//
+
+import Foundation
+import RxSwift
+
+class PASectionDatasource<T : CaseIterable, Controller: PAItemController> {
+    
+    private var sections = [PATableSection<T, Controller>]()
+    private let disposeBag = DisposeBag()
+    private let sectionUpdatePubliser = PublishSubject<(Int,PASourceUpdateEventModel)>()
+    
+    func count() -> Int {
+        return sections.count
+    }
+    
+    func addSection(item : Controller, source : PAItemControllerSource<T, Controller>) {
+        let section = PATableSection(item, source: source)
+        source.observeAdapterUpdates().map { [unowned self] (value) -> PASourceUpdateEventModel in
+            self.sectionContentUpdate(section, value)
+            return value
+        }.subscribe().disposed(by: disposeBag)
+        section.index = sections.count
+        sections.append(section)
+    }
+    
+    func sectionContentUpdate(_ section : PATableSection<T, Controller>, _ update : PASourceUpdateEventModel) {
+        sendSectionEvent((section.index, update))
+    }
+    
+    func notifySectionInserted(_ section : PATableSection<T, Controller>) {
+        sendSectionEvent((section.index,PASourceUpdateEventModel(type: UpdateEventType.itemsAdded, position: 0, itemCount: section.source.itemCount)))
+    }
+    
+    func sendSectionEvent(_ event : (Int,PASourceUpdateEventModel)) {
+        sectionUpdatePubliser.onNext(event)
+    }
+    
+    func observeSectionUpdateEvents() -> Observable<(Int,PASourceUpdateEventModel)> {
+        return sectionUpdatePubliser
+    }
+    
+    func sectionItemAtIndex(_ index : Int) -> Controller {
+        return self.sections[index].item
+    }
+    
+    func itemAtIndexPath(_ indexPath : IndexPath) -> Controller {
+        return self.sections[indexPath.row].source.getItem(indexPath.count)
+    }
+    
+}
+
+
+internal class PATableSection<T : CaseIterable, Controller: PAItemController> {
+    
+    let item : Controller
+    let source : PAItemControllerSource<T, Controller>
+    var index = 0
+
+    init(_ item : Controller, source : PAItemControllerSource<T, Controller>) {
+        self.item = item
+        self.source = source
+    }
+}
