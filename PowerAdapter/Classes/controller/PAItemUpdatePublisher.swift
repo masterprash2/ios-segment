@@ -9,7 +9,7 @@
 import Foundation
 import RxSwift
 
-class PAItemUpdatePublisher {
+public class PAItemUpdatePublisher {
     
     private let updateEventPublisher = ReplaySubject<Any>.create(bufferSize: 1)
     

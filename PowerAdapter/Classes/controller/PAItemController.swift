@@ -9,7 +9,7 @@
 import Foundation
 import DeepDiff
 
-protocol PAItemController : DiffAware, Hashable {
+public protocol PAItemController : DiffAware, Hashable {
     
     associatedtype T : CaseIterable
     

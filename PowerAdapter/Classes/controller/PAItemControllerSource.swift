@@ -10,13 +10,13 @@ import Foundation
 import RxSwift
 
 
-protocol ViewInteractor {
+public protocol ViewInteractor {
     func processWhenSafe(_ runnable: () -> Void)
     func cancelOldProcess(_ runnable: () -> Void)
 }
 
 
-@objcMembers class PAItemControllerSource<T : CaseIterable, Controller : PAItemController> : NSObject {
+@objcMembers public class PAItemControllerSource<T : CaseIterable, Controller : PAItemController> : NSObject {
     
     private let updateEventPublisher = PublishSubject<PASourceUpdateEventModel>()
     private (set) var itemCount = 0

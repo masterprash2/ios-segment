@@ -8,12 +8,12 @@
 import Foundation
 import UIKit
 
-class PATableCellProvider<EN : CaseIterable>  {
+open class PATableCellProvider<EN : CaseIterable>  {
     
     private let cellTypes : [EN]
     private var cellsRegistered = false
     
-    init(cellTypes : [EN]) {
+    public init(cellTypes : [EN]) {
         self.cellTypes = cellTypes
     }
     
@@ -28,8 +28,8 @@ class PATableCellProvider<EN : CaseIterable>  {
         }
     }
     
-    func cellNameForID(id : EN) -> String {
-        return nil!
+    open func cellNameForID(id : EN) -> String {
+        preconditionFailure("This method must be overridden")
     }
     
     func cellForId(tableView : UITableView, id : EN) -> UITableViewCell {

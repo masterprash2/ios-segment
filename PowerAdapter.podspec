@@ -31,6 +31,11 @@ TODO: Add long description of the pod here.
   s.ios.deployment_target = '8.0'
 
   s.source_files = 'PowerAdapter/Classes/**/*'
+  s.dependency 'RxSwift', '5.0.1'
+  s.dependency 'RxCocoa', '5.0.1'
+  s.dependency 'RxSwiftExt', '5.2.0'
+  s.dependency 'DeepDiff'
+  
   
   # s.resource_bundles = {
   #   'PowerAdapter' => ['PowerAdapter/Assets/*.png']

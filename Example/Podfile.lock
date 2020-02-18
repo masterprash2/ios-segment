@@ -1,4 +1,5 @@
 PODS:
+  - DeepDiff (2.3.1)
   - FBSnapshotTestCase (2.1.4):
     - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
   - FBSnapshotTestCase/Core (2.1.4)
@@ -10,34 +11,65 @@ PODS:
   - Nimble-Snapshots/Core (6.3.0):
     - FBSnapshotTestCase (~> 2.0)
     - Nimble (~> 7.0)
-  - PowerAdapter (0.1.0)
+  - PowerAdapter (0.1.0):
+    - DeepDiff
+    - RxCocoa (= 5.0.1)
+    - RxSwift (= 5.0.1)
+    - RxSwiftExt (= 5.2.0)
   - Quick (1.2.0)
+  - RxCocoa (5.0.1):
+    - RxRelay (~> 5)
+    - RxSwift (~> 5)
+  - RxRelay (5.0.1):
+    - RxSwift (~> 5)
+  - RxSwift (5.0.1)
+  - RxSwiftExt (5.2.0):
+    - RxSwiftExt/Core (= 5.2.0)
+    - RxSwiftExt/RxCocoa (= 5.2.0)
+  - RxSwiftExt/Core (5.2.0):
+    - RxSwift (~> 5.0)
+  - RxSwiftExt/RxCocoa (5.2.0):
+    - RxCocoa (~> 5.0)
+    - RxSwiftExt/Core
 
 DEPENDENCIES:
+  - DeepDiff
   - FBSnapshotTestCase (~> 2.1.4)
   - Nimble (~> 7.0)
   - Nimble-Snapshots (~> 6.3.0)
   - PowerAdapter (from `../`)
   - Quick (~> 1.2.0)
+  - RxCocoa (~> 5)
+  - RxSwift (~> 5)
 
 SPEC REPOS:
   trunk:
+    - DeepDiff
     - FBSnapshotTestCase
     - Nimble
     - Nimble-Snapshots
     - Quick
+    - RxCocoa
+    - RxRelay
+    - RxSwift
+    - RxSwiftExt
 
 EXTERNAL SOURCES:
   PowerAdapter:
     :path: "../"
 
 SPEC CHECKSUMS:
+  DeepDiff: e5ae6c50d0321568e4508cec5930b9f10bb293fc
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
   Nimble: 051e3d8912d40138fa5591c78594f95fb172af37
   Nimble-Snapshots: f5459b5b091678dc942d03ec4741cacb58ba4a52
-  PowerAdapter: 97e516c859537980ea1dcf67dbcd2487dfe1699e
+  PowerAdapter: 1d4bdb4baf2861979e58a08053c844a68a6b24f9
   Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
+  RxCocoa: e741b9749968e8a143e2b787f1dfbff2b63d0a5c
+  RxRelay: 89d54507f4fd4d969e6ec1d4bd7f3673640b4640
+  RxSwift: e2dc62b366a3adf6a0be44ba9f405efd4c94e0c4
+  RxSwiftExt: 4ca80336f43c28f11a2825cdd2fc61dd6c044697
 
-PODFILE CHECKSUM: d2ef786000990e8daff04e9e0d226c69c2bf49e4
+PODFILE CHECKSUM: 1239a2f2dca6a2e601026ac19f3eaaaa8b9a4591
 
 COCOAPODS: 1.8.4

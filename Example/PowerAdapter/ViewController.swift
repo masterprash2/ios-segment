@@ -7,12 +7,28 @@
 //
 
 import UIKit
+import PowerAdapter
 
 class ViewController: UIViewController {
+    
+    @IBOutlet var tableView : UITableView!
+    
+    private var tableDelegate : PATableDelegate<TableItemType,TableItemController>!
+    
+    required init(coder: NSCoder) {
+        let cellProvider = TableCellProvider()
+        let sectionSource = PASectionDatasource<TableItemType,TableItemController>()
+        tableDelegate = PATableDelegate.init(cellProvider, sectionSource)
+        super.init(coder: coder)!
+    }
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        tableView.delegate = tableDelegate
+        tableView.dataSource = tableDelegate
+        tableDelegate.bind(self.tableView)
     }
 
     override func didReceiveMemoryWarning() {

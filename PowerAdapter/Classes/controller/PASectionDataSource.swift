@@ -8,17 +8,21 @@
 import Foundation
 import RxSwift
 
-class PASectionDatasource<T : CaseIterable, Controller: PAItemController> {
+open class PASectionDatasource<T : CaseIterable, Controller: PAItemController> {
     
     private var sections = [PATableSection<T, Controller>]()
     private let disposeBag = DisposeBag()
     private let sectionUpdatePubliser = PublishSubject<(Int,PASourceUpdateEventModel)>()
     
+    public init() {
+        
+    }
+    
     func count() -> Int {
         return sections.count
     }
     
-    func addSection(item : Controller, source : PAItemControllerSource<T, Controller>) {
+    public func addSection(item : Controller, source : PAItemControllerSource<T, Controller>) {
         let section = PATableSection(item, source: source)
         source.observeAdapterUpdates().map { [unowned self] (value) -> PASourceUpdateEventModel in
             self.sectionContentUpdate(section, value)

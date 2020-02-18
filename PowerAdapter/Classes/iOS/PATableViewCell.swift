@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol PATableViewCell {
+public protocol PATableViewCell {
     func bind(item : Any)
 }
