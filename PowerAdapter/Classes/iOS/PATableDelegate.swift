@@ -28,7 +28,7 @@ public class PATableDelegate<T : CaseIterable, Controller : PAItemController> : 
         case .updateBegins:
             tableView.beginUpdates()
         case .itemsChanges:
-            tableView.endUpdates()
+            tableView.reloadRows(at: createIndexPathArray(update.0, update.1), with: UITableView.RowAnimation.automatic)
         case .itemsRemoved:
             tableView.deleteRows(at:  createIndexPathArray(update.0, update.1), with: UITableView.RowAnimation.automatic)
         case .itemsAdded:
@@ -43,12 +43,11 @@ public class PATableDelegate<T : CaseIterable, Controller : PAItemController> : 
             tableView.moveSection(update.1.position, toSection: update.1.newPosition)
         }
         
-        tableView.reloadRows(at: createIndexPathArray(update.0, update.1), with: UITableView.RowAnimation.automatic)
     }
     
     private func createIndexPathArray(_ section : Int,_ update : PASourceUpdateEventModel) -> [IndexPath] {
         var arr = [IndexPath]()
-        for i in update.position..<update.itemCount {
+        for i in update.position..<update.position + update.itemCount {
             arr.append(IndexPath.init(row: i, section:section ))
         }
         return arr

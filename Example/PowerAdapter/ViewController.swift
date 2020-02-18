@@ -34,8 +34,17 @@ class ViewController: UIViewController {
     
     private func createDataSource() -> PAItemControllerSource<TableItemType, TableItemController> {
         let source = PAArraySource<TableItemType, TableItemController>()
-        source.setItems(createItems())
+        setArraySourceItemsDelayed(source: source)
         return source
+    }
+    
+//    private var counter = 0
+    
+    private func setArraySourceItemsDelayed(source : PAArraySource<TableItemType, TableItemController>) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { // in half a second...
+            source.setItems(self.createItems())
+//            self.setArraySourceItemsDelayed(source: source)
+        }
     }
     
     private func createItems() -> [TableItemController] {
@@ -43,6 +52,7 @@ class ViewController: UIViewController {
         for index in 1...100 {
             arr.append(TableItemController(id: index, type: .content))
         }
+//        counter = counter + 5
         return arr
     }
 
