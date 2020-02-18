@@ -19,6 +19,8 @@ class TableCellProvider : PATableCellProvider<TableItemType> {
         switch id {
         case .content:
             return "DataListCell"
+        case .section:
+            return "DataListCell"
         }
     }
     

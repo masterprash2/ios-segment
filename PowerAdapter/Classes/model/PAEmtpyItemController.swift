@@ -14,10 +14,10 @@ class PAEmtpyItemController: PAItemController {
     }
     
     
-    typealias DiffId = Int32
+    typealias DiffId = Int
     
-    var id: Int32 = 0
-    var diffId: Int32
+    var id: Int = 0
+    var diffId: Int
     var type: PAEmptyEnum = .empty
     
     

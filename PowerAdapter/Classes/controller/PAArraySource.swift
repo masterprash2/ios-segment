@@ -9,7 +9,7 @@ import Foundation
 import RxSwift
 import DeepDiff
 
-class PAArraySource<T : CaseIterable, Controller : PAItemController> : PAItemControllerSource<T, Controller> {
+open class PAArraySource<T : CaseIterable, Controller : PAItemController> : PAItemControllerSource<T, Controller> {
     
     private var controllers = [Controller]()
     private var isAttached = false
@@ -29,12 +29,12 @@ class PAArraySource<T : CaseIterable, Controller : PAItemController> : PAItemCon
         
     }
     
-    func items() -> [Controller] {
+    public func items() -> [Controller] {
         return controllers
     }
     
     
-    func setItems(_ items: [Controller]?) {
+    public func setItems(_ items: [Controller]?) {
         switchItems(items)
     }
     

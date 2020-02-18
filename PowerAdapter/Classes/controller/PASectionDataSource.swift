@@ -8,7 +8,16 @@
 import Foundation
 import RxSwift
 
-open class PASectionDatasource<T : CaseIterable, Controller: PAItemController> {
+open class PASectionDatasource<T : CaseIterable, Controller: PAItemController> : ViewInteractor {
+    
+    public func processWhenSafe(_ runnable: () -> Void) {
+        runnable()
+    }
+    
+    public func cancelOldProcess(_ runnable: () -> Void) {
+        
+    }
+    
     
     private var sections = [PATableSection<T, Controller>]()
     private let disposeBag = DisposeBag()
@@ -29,7 +38,14 @@ open class PASectionDatasource<T : CaseIterable, Controller: PAItemController> {
             return value
         }.subscribe().disposed(by: disposeBag)
         section.index = sections.count
+        
+        source.viewInteractor = self
+        
         sections.append(section)
+    }
+    
+    public func numberOfRowsInSection(_ section : Int) -> Int {
+        return sections[section].source.itemCount
     }
     
     func sectionContentUpdate(_ section : PATableSection<T, Controller>, _ update : PASourceUpdateEventModel) {

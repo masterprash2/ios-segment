@@ -57,7 +57,11 @@ public class PATableDelegate<T : CaseIterable, Controller : PAItemController> : 
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         self.cellProvider.registerCells(tableView: tableView)
-        return self.sections.count()
+        return self.sections.numberOfRowsInSection(section)
+    }
+    
+    public func numberOfSections(in tableView: UITableView) -> Int {
+        return sections.count()
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

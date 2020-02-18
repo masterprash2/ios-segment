@@ -18,5 +18,5 @@ public protocol PAItemController : DiffAware, Hashable {
     func onDetach(source: Any)
     func onDestroy()
     var type: T { get }
-    var id: Int32 { get }
+    var id: Int { get }
 }

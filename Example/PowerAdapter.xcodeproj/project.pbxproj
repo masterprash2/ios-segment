@@ -12,6 +12,7 @@
 		334F1B5C23FBC4B6003BA463 /* DataListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 334F1B5B23FBC4B6003BA463 /* DataListCell.xib */; };
 		334F1B5E23FBC4D2003BA463 /* DataListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334F1B5D23FBC4D2003BA463 /* DataListCell.swift */; };
 		334F1B6023FBC4F8003BA463 /* BaseTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334F1B5F23FBC4F8003BA463 /* BaseTableCell.swift */; };
+		334F1B6323FBD085003BA463 /* ContentSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334F1B6223FBD085003BA463 /* ContentSource.swift */; };
 		3498AA21F38B5A403FECE617 /* Pods_PowerAdapter_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97950E65715ABCDB22404188 /* Pods_PowerAdapter_Example.framework */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
@@ -41,6 +42,7 @@
 		334F1B5B23FBC4B6003BA463 /* DataListCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DataListCell.xib; sourceTree = "<group>"; };
 		334F1B5D23FBC4D2003BA463 /* DataListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataListCell.swift; sourceTree = "<group>"; };
 		334F1B5F23FBC4F8003BA463 /* BaseTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableCell.swift; sourceTree = "<group>"; };
+		334F1B6223FBD085003BA463 /* ContentSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ContentSource.swift; path = dataSource/ContentSource.swift; sourceTree = "<group>"; };
 		3CF9F68534B7B51156B2EFD8 /* Pods_PowerAdapter_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PowerAdapter_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		585489BE76B11DDDA6AED108 /* Pods-PowerAdapter_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PowerAdapter_Example.release.xcconfig"; path = "Target Support Files/Pods-PowerAdapter_Example/Pods-PowerAdapter_Example.release.xcconfig"; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* PowerAdapter_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PowerAdapter_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -98,6 +100,14 @@
 			path = tableCell;
 			sourceTree = "<group>";
 		};
+		334F1B6123FBD058003BA463 /* dataSource */ = {
+			isa = PBXGroup;
+			children = (
+				334F1B6223FBD085003BA463 /* ContentSource.swift */,
+			);
+			name = dataSource;
+			sourceTree = "<group>";
+		};
 		607FACC71AFB9204008FA782 = {
 			isa = PBXGroup;
 			children = (
@@ -122,6 +132,7 @@
 		607FACD21AFB9204008FA782 /* Example for PowerAdapter */ = {
 			isa = PBXGroup;
 			children = (
+				334F1B6123FBD058003BA463 /* dataSource */,
 				334F1B5823FBC2C1003BA463 /* tableCell */,
 				334F1B5023FBBABF003BA463 /* model */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
@@ -406,6 +417,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				334F1B6323FBD085003BA463 /* ContentSource.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				334F1B6023FBC4F8003BA463 /* BaseTableCell.swift in Sources */,
 				334F1B5A23FBC2C1003BA463 /* TableCellProvider.swift in Sources */,

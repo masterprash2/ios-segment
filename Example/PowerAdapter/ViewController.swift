@@ -12,13 +12,13 @@ import PowerAdapter
 class ViewController: UIViewController {
     
     @IBOutlet var tableView : UITableView!
+    private let sectionSource = PASectionDatasource<TableItemType,TableItemController>()
     
     private var tableDelegate : PATableDelegate<TableItemType,TableItemController>!
     
     required init(coder: NSCoder) {
         let cellProvider = TableCellProvider()
-        let sectionSource = PASectionDatasource<TableItemType,TableItemController>()
-        tableDelegate = PATableDelegate.init(cellProvider, sectionSource)
+        tableDelegate = PATableDelegate(cellProvider, sectionSource)
         super.init(coder: coder)!
     }
     
@@ -29,6 +29,21 @@ class ViewController: UIViewController {
         tableView.delegate = tableDelegate
         tableView.dataSource = tableDelegate
         tableDelegate.bind(self.tableView)
+        self.sectionSource.addSection(item: TableItemController(id: 11111, type: .section), source: createDataSource())
+    }
+    
+    private func createDataSource() -> PAItemControllerSource<TableItemType, TableItemController> {
+        let source = PAArraySource<TableItemType, TableItemController>()
+        source.setItems(createItems())
+        return source
+    }
+    
+    private func createItems() -> [TableItemController] {
+        var arr = [TableItemController]()
+        for index in 1...100 {
+            arr.append(TableItemController(id: index, type: .content))
+        }
+        return arr
     }
 
     override func didReceiveMemoryWarning() {

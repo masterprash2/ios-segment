@@ -10,6 +10,7 @@ import Foundation
 import PowerAdapter
 
 enum TableItemType : CaseIterable {
+    case section
     case content
 }
 
@@ -19,10 +20,10 @@ class TableItemController: PAItemController {
     
     private (set) var type: TableItemType
     
-    private (set) var id: Int32
+    private (set) var id: Int
     
     
-    init(id : Int32, type : TableItemType) {
+    init(id : Int, type : TableItemType) {
         self.id = id
         self.type = type
     }
@@ -49,7 +50,7 @@ class TableItemController: PAItemController {
     
     
     static func == (lhs: TableItemController, rhs: TableItemController) -> Bool {
-        return true
+        return lhs.id == rhs.id
     }
     
     

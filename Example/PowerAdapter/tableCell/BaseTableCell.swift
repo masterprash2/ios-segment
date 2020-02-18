@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import PowerAdapter
 
-class BaseTableCell: UITableView, PATableViewCell  {
+class BaseTableCell: UITableViewCell, PATableViewCell  {
     func bind(item: Any) {
         preconditionFailure("Should override this method")
     }

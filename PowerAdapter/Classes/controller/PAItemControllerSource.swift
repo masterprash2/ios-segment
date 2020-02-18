@@ -16,7 +16,7 @@ public protocol ViewInteractor {
 }
 
 
-@objcMembers public class PAItemControllerSource<T : CaseIterable, Controller : PAItemController> : NSObject {
+@objcMembers open class PAItemControllerSource<T : CaseIterable, Controller : PAItemController> : NSObject {
     
     private let updateEventPublisher = PublishSubject<PASourceUpdateEventModel>()
     private (set) var itemCount = 0
@@ -42,7 +42,7 @@ public protocol ViewInteractor {
         return updateEventPublisher
     }
 
-    func getItemId(position: Int) -> Int32 {
+    func getItemId(position: Int) -> Int {
         return getItem(position).id
     }
 
