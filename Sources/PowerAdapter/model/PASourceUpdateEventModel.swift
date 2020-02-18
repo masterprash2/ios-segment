@@ -14,9 +14,9 @@ enum UpdateEventType {
     case itemsChanges
     case itemsRemoved
     case itemsAdded
-    case itemsMoved
+    case itemMoved
+    case sectionMoved
     case updateEnds
-    case hasStableIds
 }
 
 internal struct PASourceUpdateEventModel  {
@@ -24,11 +24,20 @@ internal struct PASourceUpdateEventModel  {
     let type: UpdateEventType
     let position: Int
     let itemCount: Int
+    let newPosition : Int
     
     init(type: UpdateEventType, position: Int, itemCount: Int) {
         self.type = type
         self.position = position
         self.itemCount = itemCount
+        self.newPosition = -1
+    }
+    
+    init(type: UpdateEventType, oldPosition: Int, newPosition: Int) {
+        self.type = type
+        self.position = oldPosition
+        self.itemCount = -1
+        self.newPosition = newPosition
     }
 
 }

@@ -24,8 +24,34 @@ class PATableDataDelegate<T : CaseIterable, Controller : PAItemController> : NSO
     }
     
     private func performUpdate(_ tableView : UITableView, _ update : (Int, PASourceUpdateEventModel) ){
-        tableView.reloadRows(at: <#T##[IndexPath]#>, with: <#T##UITableView.RowAnimation#>)
+        switch update.1.type {
+        case .updateBegins:
+            tableView.beginUpdates()
+        case .itemsChanges:
+            tableView.endUpdates()
+        case .itemsRemoved:
+            tableView.deleteRows(at:  createIndexPathArray(update.0, update.1), with: UITableView.RowAnimation.automatic)
+        case .itemsAdded:
+            tableView.insertRows(at:  createIndexPathArray(update.0, update.1), with: UITableView.RowAnimation.automatic)
+        case .itemMoved:
+            let oldPath = IndexPath(row: update.1.position, section: update.0)
+            let newPath = IndexPath(row: update.1.newPosition, section: update.0)
+            tableView.moveRow(at: oldPath, to: newPath)
+        case .updateEnds:
+            tableView.endUpdates()
+        case .sectionMoved:
+            tableView.moveSection(update.1.position, toSection: update.1.newPosition)
+        }
         
+        tableView.reloadRows(at: createIndexPathArray(update.0, update.1), with: UITableView.RowAnimation.automatic)
+    }
+    
+    private func createIndexPathArray(_ section : Int,_ update : PASourceUpdateEventModel) -> [IndexPath] {
+        var arr = [IndexPath]()
+        for i in update.position..<update.itemCount {
+            arr.append(IndexPath.init(row: i, section:section ))
+        }
+        return arr
     }
     
     
@@ -46,7 +72,7 @@ class PATableDataDelegate<T : CaseIterable, Controller : PAItemController> : NSO
         return self.sections.itemAtIndexPath(indexPath)
     }
     
-    func sectionAtInde(_ index : Int) -> Controller {
+    func sectionAtIndex(_ index : Int) -> Controller {
         return sections.sectionItemAtIndex(index)
     }
     

@@ -53,7 +53,7 @@ class PAArraySource<T : CaseIterable, Controller : PAItemController> : PAItemCon
         var oldItems = controllers
         controllers = newItems
         beginUpdates()
-        if (useDiffProcess) {
+        if (useDiffProcess && false) {
 //            diffResult.dispatchUpdatesTo(self)
         } else {
             let diff = newCount - oldCount

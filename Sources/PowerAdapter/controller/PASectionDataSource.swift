@@ -49,7 +49,7 @@ class PASectionDatasource<T : CaseIterable, Controller: PAItemController> {
     }
     
     func itemAtIndexPath(_ indexPath : IndexPath) -> Controller {
-        return self.sections[indexPath.row].source.getItem(indexPath.count)
+        return self.sections[indexPath.section].source.getItem(indexPath.row)
     }
     
 }
