@@ -59,12 +59,12 @@ open class PAArraySource<T : CaseIterable, Controller : PAItemController> : PAIt
             let diff = newCount - oldCount
             if (diff > 0) {
                 notifyItemsInserted(oldCount, diff)
-                notifyItemsChanged(startIndex: 0, itemCount: oldCount)
+                notifyItemsChanged(0, itemCount: oldCount)
             } else if (diff < 0) {
                 notifyItemsRemoved(newCount, diff * -1)
-                notifyItemsChanged(startIndex: 0, itemCount: newCount)
+                notifyItemsChanged(0, itemCount: newCount)
             } else {
-                notifyItemsChanged(startIndex: 0, itemCount: newCount)
+                notifyItemsChanged(0, itemCount: newCount)
             }
         }
         endUpdates()
@@ -126,7 +126,7 @@ open class PAArraySource<T : CaseIterable, Controller : PAItemController> : PAIt
         let old = controllers[index]
         controllers[index] = item
         old.onDestroy()
-        notifyItemsChanged(startIndex: index, itemCount: 1)
+        notifyItemsChanged(index, itemCount: 1)
         if (isAttached) {
             item.onCreate(itemUpdatePublisher)
         }
@@ -160,7 +160,7 @@ open class PAArraySource<T : CaseIterable, Controller : PAItemController> : PAIt
         processWhenSafe{
             let index = self.controllers.firstIndex(of: itemController as! Controller)
             if (index ?? -1 >= 0) {
-                notifyItemsChanged(startIndex: index!, itemCount: 1)
+                notifyItemsChanged(index!, itemCount: 1)
             }
         }
     }

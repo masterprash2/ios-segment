@@ -111,6 +111,12 @@ public protocol ViewInteractor {
         publishUpdateEvent(startPosition, UpdateEventType.itemsAdded, diff)
         resetCachedItems(startPosition)
     }
+    
+    func notifyItemMoved(_ position : Int, newPosition : Int) {
+        resetCachedItems(min(position,newPosition))
+        updateEventPublisher.onNext(PASourceUpdateEventModel(type: .itemMoved, oldPosition: position, newPosition: newPosition))
+        resetCachedItems(min(position,newPosition))
+    }
 
     private func computeItemCountOnItemsInserted(_ startPosition: Int,_ itemCount: Int) -> Int {
         return (hasMaxLimit) ? itemCountIfLimitEnabled(startPosition + itemCount) : self.itemCount + itemCount
@@ -148,7 +154,8 @@ public protocol ViewInteractor {
         updateEventPublisher.onNext(PASourceUpdateEventModel(type: type, position: startPosition, itemCount: itemCount))
     }
 
-    func notifyItemsChanged(startIndex: Int, itemCount: Int) {
+
+    func notifyItemsChanged(_ startIndex: Int, itemCount: Int) {
         if (self.itemCount > startIndex) {
             resetCachedItems(startIndex)
             publishUpdateEvent(startIndex, UpdateEventType.itemsChanges, min(self.itemCount - startIndex, itemCount))
