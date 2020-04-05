@@ -9,7 +9,7 @@
 import Foundation
 import PowerAdapter
 
-class ContentSource: PAArraySource<TableItemType, TableItemController> {
+class ContentSource: PAArraySource {
     
     
     

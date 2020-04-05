@@ -12,9 +12,9 @@ import PowerAdapter
 class ViewController: UIViewController {
     
     @IBOutlet var tableView : UITableView!
-    private let sectionSource = PASectionDatasource<TableItemType,TableItemController>()
+    private let sectionSource = PASectionDatasource()
     
-    private var tableDelegate : PATableDelegate<TableItemType,TableItemController>!
+    private var tableDelegate : PATableDelegate!
     
     required init(coder: NSCoder) {
         let cellProvider = TableCellProvider()
@@ -33,14 +33,14 @@ class ViewController: UIViewController {
         self.sectionSource.addSection(item: TableItemController(id: 11112, type: .section), source: createMultiPlexSource())
     }
     
-    private func createDataSource() -> PAItemControllerSource<TableItemType, TableItemController> {
-        let source = PAArraySource<TableItemType, TableItemController>()
+    private func createDataSource() -> PAItemControllerSource {
+        let source = PAArraySource()
         setArraySourceItemsDelayed(source: source)
         return source
     }
     
-    private func createMultiPlexSource() -> PAItemControllerSource<TableItemType, TableItemController> {
-        let source = PAMultiplexSource<TableItemType, TableItemController>()
+    private func createMultiPlexSource() -> PAItemControllerSource {
+        let source = PAMultiplexSource()
         source.addSource(adapter: createDataSource())
         source.addSource(adapter: createDataSource())
         source.addSource(adapter: createDataSource())
@@ -50,7 +50,7 @@ class ViewController: UIViewController {
     
 //    private var counter = 0
     
-    private func setArraySourceItemsDelayed(source : PAArraySource<TableItemType, TableItemController>) {
+    private func setArraySourceItemsDelayed(source : PAArraySource) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { // in half a second...
             source.setItems(self.createItems())
 //            self.setArraySourceItemsDelayed(source: source)

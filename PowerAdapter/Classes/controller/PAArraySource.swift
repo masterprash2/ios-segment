@@ -9,9 +9,9 @@ import Foundation
 import RxSwift
 import DeepDiff
 
-open class PAArraySource<T : CaseIterable, Controller : PAItemController> : PAItemControllerSource<T, Controller> {
+open class PAArraySource : PAItemControllerSource {
     
-    private var controllers = [Controller]()
+    private var controllers = [PAItemController]()
     private var isAttached = false
     private let itemUpdatePublisher = PAItemUpdatePublisher()
     private var disposeBag : DisposeBag?
@@ -21,7 +21,7 @@ open class PAArraySource<T : CaseIterable, Controller : PAItemController> : PAIt
         disposeBag = DisposeBag()
         observeItemUpdates().disposed(by: disposeBag!)
         for item in controllers {
-            item.onCreate(itemUpdatePublisher)
+            item.performCreate(itemUpdatePublisher)
         }
     }
     
@@ -29,24 +29,27 @@ open class PAArraySource<T : CaseIterable, Controller : PAItemController> : PAIt
         
     }
     
-    public func items() -> [Controller] {
+    public func items() -> [PAItemController] {
         return controllers
     }
     
     
-    public func setItems(_ items: [Controller]?) {
+    public func setItems(_ items: [PAController]?) {
         switchItems(items)
     }
     
-    private func switchItems(_ items:  [Controller]?, useDiffProcess: Bool) {
-        var newItems = (items != nil) ? items! : [Controller]()
-        processWhenSafe { switchItemImmediate(useDiffProcess, &newItems) }
+    private func switchItems(_ items:  [PAController]?, useDiffProcess: Bool) {
+        let newItems = (items != nil) ? items! : [PAController]()
+        var transformation = newItems.map({ (input) -> PAItemController in
+            return PAItemController(input)
+        })
+        processWhenSafe { switchItemImmediate(useDiffProcess, &transformation) }
     }
     
-    private func switchItemImmediate(_ useDiffProcess: Bool,_ newItems: inout [Controller]) {
+    private func switchItemImmediate(_ useDiffProcess: Bool,_ newItems: inout [PAItemController]) {
         let oldCount = controllers.count
         let newCount = newItems.count
-        let retained = Set<Controller>()
+        let retained = Set<PAItemController>()
         
         let diffResult = diff(old: controllers, new: newItems)
 //        diffResult.
@@ -70,7 +73,7 @@ open class PAArraySource<T : CaseIterable, Controller : PAItemController> : PAIt
         endUpdates()
         if (isAttached) {
             for item in newItems {
-                item.onCreate(itemUpdatePublisher)
+                item.performCreate(itemUpdatePublisher)
             }
         }
         
@@ -79,15 +82,15 @@ open class PAArraySource<T : CaseIterable, Controller : PAItemController> : PAIt
         }
         
         for item in oldItems {
-            item.onDestroy()
+            item.performDestroy()
         }
     }
     
-    func switchItems(_ items: [Controller]?) {
+    func switchItems(_ items: [PAController]?) {
         switchItems(items, useDiffProcess: false)
     }
     
-    func switchItemsWithDiffRemovalAndInsertions(_ items: [Controller]?) {
+    func switchItemsWithDiffRemovalAndInsertions(_ items: [PAController]?) {
         switchItems(items, useDiffProcess: true)
     }
     
@@ -118,21 +121,22 @@ open class PAArraySource<T : CaseIterable, Controller : PAItemController> : PAIt
 //        }, false)
 //    }
     
-    func replaceItem(_ index: Int, _ item: Controller) {
+    func replaceItem(_ index: Int, _ item: PAController) {
         processWhenSafe{ replaceItemWhenSafe(index, item) }
     }
     
-    private func replaceItemWhenSafe(_ index: Int,_ item: Controller) {
+    private func replaceItemWhenSafe(_ index: Int,_ item: PAController) {
         let old = controllers[index]
-        controllers[index] = item
-        old.onDestroy()
+        controllers[index] = PAItemController(item)
+        old.performDestroy()
         notifyItemsChanged(index, itemCount: 1)
         if (isAttached) {
             item.onCreate(itemUpdatePublisher)
         }
     }
     
-    override func getItemPosition(_ item: Controller) -> Int {
+    
+    override func getItemPosition(_ item: PAItemController) -> Int {
         return controllers.firstIndex(of: item) ?? -1
     }
     
@@ -141,7 +145,7 @@ open class PAArraySource<T : CaseIterable, Controller : PAItemController> : PAIt
         return controllers.count
     }
     
-    override func getItemForPosition(_ position: Int) -> Controller {
+    override func getItemForPosition(_ position: Int) -> PAItemController {
         return controllers[position]
     }
     
@@ -158,7 +162,7 @@ open class PAArraySource<T : CaseIterable, Controller : PAItemController> : PAIt
     
     private func postItemUpdate(_ itemController: Any) {
         processWhenSafe{
-            let index = self.controllers.firstIndex(of: itemController as! Controller)
+            let index = self.controllers.firstIndex(of: itemController as! PAItemController)
             if (index ?? -1 >= 0) {
                 notifyItemsChanged(index!, itemCount: 1)
             }
@@ -169,7 +173,7 @@ open class PAArraySource<T : CaseIterable, Controller : PAItemController> : PAIt
         disposeBag = nil
         isAttached = false
         for cn in controllers {
-            cn.onDestroy()
+            cn.performDestroy()
         }
     }
     

@@ -16,7 +16,7 @@ public protocol ViewInteractor {
 }
 
 
-@objcMembers open class PAItemControllerSource<T : CaseIterable, Controller : PAItemController> : NSObject {
+@objcMembers open class PAItemControllerSource : NSObject {
     
     private let updateEventPublisher = PublishSubject<PASourceUpdateEventModel>()
     private (set) var itemCount = 0
@@ -25,7 +25,7 @@ public protocol ViewInteractor {
 
     open var viewInteractor: ViewInteractor?
 
-    private var lastItem: Controller?
+    private var lastItem: PAItemController?
     //    ItemControllerSource<Item,Controller> getRootAdapter(int position);
     private (set) var lastItemIndex = 0
         
@@ -43,11 +43,11 @@ public protocol ViewInteractor {
     }
 
     func getItemId(position: Int) -> Int {
-        return getItem(position).id
+        return getItem(position).id()
     }
 
-    func getItemType(position: Int) -> T {
-        return getItem(position).type as! T
+    func getItemType(position: Int) -> Int {
+        return getItem(position).type()
     }
 
     func setMaxLimit(limit: Int) {
@@ -79,12 +79,12 @@ public protocol ViewInteractor {
         }
     }
 
-    func getItemPosition(_ item: Controller) -> Int
+    func getItemPosition(_ item: PAItemController) -> Int
     {
         return 0
     }
     
-    func getItem(_ position: Int) -> Controller {
+    func getItem(_ position: Int) -> PAItemController {
         if (lastItemIndex == position) {
             return lastItem!
         } else {
@@ -95,7 +95,7 @@ public protocol ViewInteractor {
         }
     }
 
-    func getItemForPosition(_ position: Int) -> Controller {
+    func getItemForPosition(_ position: Int) -> PAItemController {
         return nil!
     }
     //    public abstract void onItemDetached(int position);

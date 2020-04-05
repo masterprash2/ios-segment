@@ -7,47 +7,45 @@
 
 import Foundation
 
-class PAEmtpyItemController: PAItemController {
+class PAEmtpyItemController: PAController {
     
-    static func == (lhs: PAEmtpyItemController, rhs: PAEmtpyItemController) -> Bool {
-        return true
+   
+    
+    
+    
+    func getType() -> Int {
+        1
     }
     
-    
-    typealias DiffId = Int
-    
-    var id: Int = 0
-    var diffId: Int
-    var type: PAEmptyEnum = .empty
-    
-    
-    init() {
-        diffId = id
+    func getId() -> Int {
+        1
     }
     
     func onCreate(_ itemUpdatePublisher: PAItemUpdatePublisher) {
+           
+    }
+    
+    func onViewWillAppear() {
         
     }
     
-    func onAttach(source: Any) {
-        
-    }
-    
-    func onDetach(source: Any) {
+    func onViewWillDisapper() {
         
     }
     
     func onDestroy() {
         
     }
-        
-    static func compareContent(_ a: PAEmtpyItemController, _ b: PAEmtpyItemController) -> Bool {
+    
+    
+    func isContentEqual(_ rhs: PAController) -> Bool {
         return true
     }
     
+    
+   
     func hash(into hasher: inout Hasher) {
         
     }
-
     
 }

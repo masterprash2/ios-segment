@@ -12,9 +12,9 @@ import RxSwift
 /**
  * Created by prashant.rathore on 24/06/18.
  */
-public class PAMultiplexSource<T : CaseIterable, Controller : PAItemController> : PAProxySource<T, Controller> {
+public class PAMultiplexSource : PAProxySource {
     
-    private var adapters = [PAAdapterAsItem<T,Controller>]()
+    private var adapters = [PAAdapterAsItem]()
     private var isAttached = false
     
     public override init() {
@@ -44,17 +44,17 @@ public class PAMultiplexSource<T : CaseIterable, Controller : PAItemController> 
     }
 
 
-    public func addSource(adapter: PAItemControllerSource<T, Controller>) {
+    public func addSource(adapter: PAItemControllerSource) {
         insertSource(adapters.count, adapter)
     }
 
-    public func insertSource(_ index: Int, _  adapter: PAItemControllerSource<T,Controller>) {
-        let item = PAAdapterAsItem<T, Controller>(adapter: adapter,parent: self)
+    public func insertSource(_ index: Int, _  adapter: PAItemControllerSource) {
+        let item = PAAdapterAsItem(adapter: adapter,parent: self)
         adapter.viewInteractor = viewInteractor
         processWhenSafe{ addSourceImmediate(index, item) }
     }
 
-    private func addSourceImmediate(_ index: Int,_ item: PAAdapterAsItem<T,Controller>) {
+    private func addSourceImmediate(_ index: Int,_ item: PAAdapterAsItem) {
         if (adapters.count > index) {
             let previousItem = adapters[index]
             item.startPosition = previousItem.startPosition
@@ -80,7 +80,7 @@ public class PAMultiplexSource<T : CaseIterable, Controller : PAItemController> 
         return 0
     }
 
-    override func getItemForPosition(_ position: Int) -> Controller {
+    override func getItemForPosition(_ position: Int) -> PAItemController {
         let item = decodeAdapterItem(position)
         return item.adapter.getItem(position - item.startPosition)
     }
@@ -97,8 +97,8 @@ public class PAMultiplexSource<T : CaseIterable, Controller : PAItemController> 
         isAttached = false
     }
 
-    private func decodeAdapterItem(_ position: Int) -> PAAdapterAsItem<T, Controller> {
-        var previous: PAAdapterAsItem<T,Controller>!
+    private func decodeAdapterItem(_ position: Int) -> PAAdapterAsItem {
+        var previous: PAAdapterAsItem!
         for adapterAsItem in adapters {
             if (adapterAsItem.startPosition > position) {
                 return previous
@@ -109,7 +109,7 @@ public class PAMultiplexSource<T : CaseIterable, Controller : PAItemController> 
         return previous
     }
 
-    override func getItemPosition(_ item: Controller) -> Int {
+    override func getItemPosition(_ item: PAItemController) -> Int {
         let top = 0
         var itemPosition = -1
         for adapterAsItem in adapters {
@@ -127,7 +127,7 @@ public class PAMultiplexSource<T : CaseIterable, Controller : PAItemController> 
     }
 
     private func removeAdapterImmediate(_ removeAdapterAtPosition: Int) {
-        let remove: PAAdapterAsItem<T,Controller> = adapters.remove(at: removeAdapterAtPosition)
+        let remove: PAAdapterAsItem = adapters.remove(at: removeAdapterAtPosition)
         let removePositionStart = remove.startPosition
         var nextAdapterStartPosition = removePositionStart
         for index in removeAdapterAtPosition..<adapters.count {
@@ -141,7 +141,7 @@ public class PAMultiplexSource<T : CaseIterable, Controller : PAItemController> 
         remove.adapter.viewInteractor = nil
     }
 
-    override func updateIndexes(_ modifiedItem: PAAdapterAsItem<T, Controller>) {
+    override func updateIndexes(_ modifiedItem: PAAdapterAsItem) {
         var modifiedItem = modifiedItem
         var continueUpdating = false
         for item in adapters {

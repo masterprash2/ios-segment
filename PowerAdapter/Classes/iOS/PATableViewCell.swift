@@ -8,5 +8,5 @@
 import Foundation
 
 public protocol PATableViewCell {
-    func bind(item : Any)
+    func bind(item : PAController)
 }

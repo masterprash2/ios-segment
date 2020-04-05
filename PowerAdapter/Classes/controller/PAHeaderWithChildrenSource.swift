@@ -8,10 +8,10 @@
 import Foundation
 import RxSwift
 
-class PAHeaderWithChildrenSource<T : CaseIterable, Controller : PAItemController> : PAProxySource<T,Controller> {
+class PAHeaderWithChildrenSource : PAProxySource {
     
-    private var headerItemSource: PAAdapterAsItem<T,Controller>?
-    private var childrenItemSource: PAAdapterAsItem<T,Controller>?
+    private var headerItemSource: PAAdapterAsItem?
+    private var childrenItemSource: PAAdapterAsItem?
     private var isAttached = false
 
     override func onAttached() {
@@ -59,7 +59,7 @@ class PAHeaderWithChildrenSource<T : CaseIterable, Controller : PAItemController
         return headerCount + childrenCount()
     }
 
-    override func getItemForPosition(_ position: Int) -> Controller {
+    override func getItemForPosition(_ position: Int) -> PAItemController {
         let item = decodeAdapterItem(position)
         return item.adapter.getItem(position - item.startPosition)
     }
@@ -75,7 +75,7 @@ class PAHeaderWithChildrenSource<T : CaseIterable, Controller : PAItemController
         isAttached = false
     }
 
-    private func decodeAdapterItem(_ position: Int) -> PAAdapterAsItem<T,Controller> {
+    private func decodeAdapterItem(_ position: Int) -> PAAdapterAsItem {
         if (childrenItemSource != nil && childrenItemSource!.startPosition < position) {
             return childrenItemSource!
         } else {
@@ -83,7 +83,7 @@ class PAHeaderWithChildrenSource<T : CaseIterable, Controller : PAItemController
         }
     }
 
-    override func getItemPosition(_ item: Controller) -> Int {
+    override func getItemPosition(_ item: PAItemController) -> Int {
 //        let top = 0
         var itemPosition = getItemPositionHeader(item)
         if (itemPosition < 0) {
@@ -92,11 +92,11 @@ class PAHeaderWithChildrenSource<T : CaseIterable, Controller : PAItemController
         return itemPosition
     }
 
-    private func getItemPositionHeader(_ item: Controller) -> Int {
+    private func getItemPositionHeader(_ item: PAItemController) -> Int {
         return headerItemSource?.adapter.getItemPosition(item) ?? -1
     }
 
-    func getItemPositionChildren(_ item: Controller) -> Int {
+    func getItemPositionChildren(_ item: PAItemController) -> Int {
         if (childrenItemSource == nil) {
             return -1
         } else {
@@ -104,7 +104,7 @@ class PAHeaderWithChildrenSource<T : CaseIterable, Controller : PAItemController
         }
     }
 
-    override func updateIndexes(_ modifiedItem: PAAdapterAsItem<T, Controller>) {
+    override func updateIndexes(_ modifiedItem: PAAdapterAsItem) {
         if (modifiedItem === headerItemSource && childrenItemSource != nil) {
             childrenItemSource!.startPosition = headerCount
         }

@@ -9,14 +9,14 @@
 import Foundation
 import PowerAdapter
 
-enum TableItemType : CaseIterable {
+enum TableItemType : Int, CaseIterable {
     case section
     case content
 }
 
-class TableItemController: PAItemController {
+class TableItemController: PAController {
+   
     
-    typealias T = TableItemType
     
     private (set) var type: TableItemType
     
@@ -28,31 +28,37 @@ class TableItemController: PAItemController {
         self.type = type
     }
     
+    func getType() -> Int {
+        return type.rawValue
+    }
+    
+    func getId() -> Int {
+        return id
+    }
+    
     func onCreate(_ itemUpdatePublisher: PAItemUpdatePublisher) {
-        
+           
     }
-    
-    func onAttach(source: Any) {
-    
-    }
-    
-    func onDetach(source: Any) {
-    
-    }
-    
+       
     func onDestroy() {
+           
+    }
+    
+    func onViewWillAppear() {
         
     }
+    
+    func onViewWillDisapper() {
+        
+    }
+    
+    func isContentEqual(_ rhs: PAController) -> Bool {
+        return self.id == rhs.getId()
+    }
+    
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
-    
-    
-    static func == (lhs: TableItemController, rhs: TableItemController) -> Bool {
-        return lhs.id == rhs.id
-    }
-    
-    
     
 }

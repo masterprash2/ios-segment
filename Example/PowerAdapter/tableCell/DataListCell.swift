@@ -7,10 +7,12 @@
 //
 
 import Foundation
+import PowerAdapter
 
 class DataListCell: BaseTableCell {
     
-    override func bind(item: Any) {
+    override func bind(item: PAController) {
         
     }
+    
 }

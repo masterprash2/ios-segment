@@ -8,7 +8,7 @@
 import Foundation
 import RxSwift
 
-open class PASectionDatasource<T : CaseIterable, Controller: PAItemController> : ViewInteractor {
+open class PASectionDatasource : ViewInteractor {
     
     public func processWhenSafe(_ runnable: () -> Void) {
         runnable()
@@ -19,7 +19,7 @@ open class PASectionDatasource<T : CaseIterable, Controller: PAItemController> :
     }
     
     
-    private var sections = [PATableSection<T, Controller>]()
+    private var sections = [PATableSection]()
     private let disposeBag = DisposeBag()
     private let sectionUpdatePubliser = PublishSubject<(Int,PASourceUpdateEventModel)>()
     
@@ -31,8 +31,8 @@ open class PASectionDatasource<T : CaseIterable, Controller: PAItemController> :
         return sections.count
     }
     
-    public func addSection(item : Controller, source : PAItemControllerSource<T, Controller>) {
-        let section = PATableSection(item, source: source)
+    public func addSection(item : PAController, source : PAItemControllerSource) {
+        let section = PATableSection(PAItemController(item), source: source)
         source.observeAdapterUpdates().map { [unowned self] (value) -> PASourceUpdateEventModel in
             self.sectionContentUpdate(section, value)
             return value
@@ -48,11 +48,11 @@ open class PASectionDatasource<T : CaseIterable, Controller: PAItemController> :
         return sections[section].source.itemCount
     }
     
-    func sectionContentUpdate(_ section : PATableSection<T, Controller>, _ update : PASourceUpdateEventModel) {
+    func sectionContentUpdate(_ section : PATableSection, _ update : PASourceUpdateEventModel) {
         sendSectionEvent((section.index, update))
     }
     
-    func notifySectionInserted(_ section : PATableSection<T, Controller>) {
+    func notifySectionInserted(_ section : PATableSection) {
         sendSectionEvent((section.index,PASourceUpdateEventModel(type: UpdateEventType.itemsAdded, position: 0, itemCount: section.source.itemCount)))
     }
     
@@ -64,24 +64,24 @@ open class PASectionDatasource<T : CaseIterable, Controller: PAItemController> :
         return sectionUpdatePubliser
     }
     
-    func sectionItemAtIndex(_ index : Int) -> Controller {
+    func sectionItemAtIndex(_ index : Int) -> PAItemController {
         return self.sections[index].item
     }
     
-    func itemAtIndexPath(_ indexPath : IndexPath) -> Controller {
+    func itemAtIndexPath(_ indexPath : IndexPath) -> PAItemController {
         return self.sections[indexPath.section].source.getItem(indexPath.row)
     }
     
 }
 
 
-internal class PATableSection<T : CaseIterable, Controller: PAItemController> {
+internal class PATableSection {
     
-    let item : Controller
-    let source : PAItemControllerSource<T, Controller>
+    let item : PAItemController
+    let source : PAItemControllerSource
     var index = 0
 
-    init(_ item : Controller, source : PAItemControllerSource<T, Controller>) {
+    init(_ item : PAItemController, source : PAItemControllerSource) {
         self.item = item
         self.source = source
     }

@@ -7,13 +7,8 @@
 
 import Foundation
 
-enum PAEmptyEnum : CaseIterable {
-       case empty
-}
-  
 
-
-class PAEmtpySource : PAItemControllerSource<PAEmptyEnum, PAEmtpyItemController> {
+class PAEmtpySource : PAItemControllerSource {
     
     
 }

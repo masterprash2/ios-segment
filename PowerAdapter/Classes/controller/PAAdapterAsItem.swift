@@ -8,15 +8,15 @@
 import Foundation
 import RxSwift
 
-class PAAdapterAsItem<T : CaseIterable, Controller : PAItemController> {
+class PAAdapterAsItem {
     
-    let adapter: PAItemControllerSource<T, Controller>
+    let adapter: PAItemControllerSource
     var startPosition = 0
     var updateObserver: Disposable!
-    weak var parent : PAProxySource<T,Controller>?
+    weak var parent : PAProxySource?
     
-    init(adapter: PAItemControllerSource<T, Controller>,
-         parent : PAProxySource<T,Controller>) {
+    init(adapter: PAItemControllerSource,
+         parent : PAProxySource) {
         self.adapter = adapter
         self.parent = parent
         DispatchQueue.main.async {

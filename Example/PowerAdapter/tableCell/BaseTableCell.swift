@@ -11,7 +11,8 @@ import UIKit
 import PowerAdapter
 
 class BaseTableCell: UITableViewCell, PATableViewCell  {
-    func bind(item: Any) {
+    
+    func bind(item: PAController) {
         preconditionFailure("Should override this method")
     }
     

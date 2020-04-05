@@ -3,13 +3,13 @@ import RxSwift
 import UIKit
 
 
-public class PATableDelegate<T : CaseIterable, Controller : PAItemController> : NSObject, UITableViewDataSource, UITableViewDelegate {
+public class PATableDelegate : NSObject, UITableViewDataSource, UITableViewDelegate {
     
-    private let cellProvider : PATableCellProvider<T>
-    private let sections : PASectionDatasource<T, Controller>
+    private let cellProvider : PATableCellProvider
+    private let sections : PASectionDatasource
     private let disposeBag = DisposeBag()
     
-    public init(_ cellProvider : PATableCellProvider<T>,_ sections : PASectionDatasource<T, Controller>) {
+    public init(_ cellProvider : PATableCellProvider,_ sections : PASectionDatasource) {
         self.cellProvider = cellProvider
         self.sections = sections
     }
@@ -21,6 +21,7 @@ public class PATableDelegate<T : CaseIterable, Controller : PAItemController> : 
             }
             return true
         }.subscribe().disposed(by: disposeBag)
+        self.cellProvider.registerCellsInternal(tableView)
     }
     
     private func performUpdate(_ tableView : UITableView, _ update : (Int, PASourceUpdateEventModel) ){
@@ -55,7 +56,6 @@ public class PATableDelegate<T : CaseIterable, Controller : PAItemController> : 
     
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        self.cellProvider.registerCells(tableView: tableView)
         return self.sections.numberOfRowsInSection(section)
     }
     
@@ -65,17 +65,17 @@ public class PATableDelegate<T : CaseIterable, Controller : PAItemController> : 
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = itemAtIndexPath(indexPath)
-        let cell = self.cellProvider.cellForId(tableView: tableView, id: item.type as! T)
+        let cell = self.cellProvider.cellForController(tableView, item)
         let paTableCell = (cell as! PATableViewCell)
         paTableCell.bind(item: item)
         return cell
     }
     
-    func itemAtIndexPath(_ indexPath: IndexPath) -> Controller {
-        return self.sections.itemAtIndexPath(indexPath)
+    func itemAtIndexPath(_ indexPath: IndexPath) -> PAController {
+        return self.sections.itemAtIndexPath(indexPath).controller
     }
     
-    func sectionAtIndex(_ index : Int) -> Controller {
+    func sectionAtIndex(_ index : Int) -> PAItemController {
         return sections.sectionItemAtIndex(index)
     }
     

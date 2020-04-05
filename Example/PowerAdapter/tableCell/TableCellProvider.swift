@@ -9,14 +9,22 @@
 import Foundation
 import PowerAdapter
 
-class TableCellProvider : PATableCellProvider<TableItemType> {
+class TableCellProvider : PATableCellProvider {
     
-    init() {
-        super.init(cellTypes: TableItemType.allCases)
+    
+    override func registerCells(_ tableView: UITableView) {
+        TableItemType.allCases.forEach { (type) in
+            let name = cellNameForType(type)
+            tableView.register(UINib(nibName: name, bundle: nil), forCellReuseIdentifier: name)
+        }
     }
     
-    override func cellNameForID(id: TableItemType) -> String {
-        switch id {
+    override func cellNameForController(_ controller: PAController) -> String {
+        return cellNameForType(TableItemType(rawValue: controller.getType())!)
+    }
+    
+    func cellNameForType(_ type: TableItemType) -> String {
+        switch type {
         case .content:
             return "DataListCell"
         case .section:

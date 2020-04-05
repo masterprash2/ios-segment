@@ -7,10 +7,10 @@
 
 import Foundation
 
-class PAProxySource<T : CaseIterable, Controller : PAItemController> : PAItemControllerSource<T,Controller> {
+public class PAProxySource : PAItemControllerSource {
     
     
-    func updateIndexes(_ modifiedItem: PAAdapterAsItem<T, Controller>) {
+    func updateIndexes(_ modifiedItem: PAAdapterAsItem) {
         preconditionFailure("Should override this method")
     }
     

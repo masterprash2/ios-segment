@@ -8,32 +8,31 @@
 import Foundation
 import UIKit
 
-open class PATableCellProvider<EN : CaseIterable>  {
+open class PATableCellProvider  {
     
-    private let cellTypes : [EN]
     private var cellsRegistered = false
     
-    public init(cellTypes : [EN]) {
-        self.cellTypes = cellTypes
+    public init() {
     }
     
-    func registerCells(tableView : UITableView) {
+    internal func registerCellsInternal(_ tableView : UITableView) {
         if(cellsRegistered) {
             return
         }
         cellsRegistered = true
-        for value in cellTypes {
-            let name = cellNameForID(id: value)
-            tableView.register(UINib(nibName: name, bundle: nil), forCellReuseIdentifier: name)
-        }
+        registerCells(tableView)
     }
     
-    open func cellNameForID(id : EN) -> String {
-        preconditionFailure("This method must be overridden")
+    open func registerCells(_ tableView : UITableView) {
+        preconditionFailure("This method must be implemented")
     }
     
-    func cellForId(tableView : UITableView, id : EN) -> UITableViewCell {
-        return tableView.dequeueReusableCell(withIdentifier: cellNameForID(id: id))!
+    open func cellNameForController(_ controller : PAController) -> String {
+        preconditionFailure("This method must be implemented")
+    }
+    
+    internal func cellForController(_ tableView : UITableView,_ controller : PAController) -> UITableViewCell {
+        return tableView.dequeueReusableCell(withIdentifier: cellNameForController(controller))!
     }
     
 }
