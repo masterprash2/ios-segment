@@ -9,9 +9,6 @@ import Foundation
 
 class PAEmtpyItemController: PAController {
     
-   
-    
-    
     
     func getType() -> Int {
         1
@@ -29,7 +26,7 @@ class PAEmtpyItemController: PAController {
         
     }
     
-    func onViewWillDisapper() {
+    func onViewDidDisapper() {
         
     }
     

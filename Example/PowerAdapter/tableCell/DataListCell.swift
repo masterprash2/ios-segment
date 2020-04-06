@@ -9,10 +9,7 @@
 import Foundation
 import PowerAdapter
 
-class DataListCell: BaseTableCell {
+class DataListCell: PATableViewCell {
     
-    override func bind(item: PAController) {
-        
-    }
     
 }

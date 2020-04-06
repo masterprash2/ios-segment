@@ -54,6 +54,13 @@ open class PAArraySource : PAItemControllerSource {
         let diffResult = diff(old: controllers, new: newItems)
 //        diffResult.
         var oldItems = controllers
+        
+        if (isAttached) {
+            for item in newItems {
+                item.performCreate(itemUpdatePublisher)
+            }
+        }
+        
         controllers = newItems
         beginUpdates()
         if (useDiffProcess && false) {
@@ -71,11 +78,7 @@ open class PAArraySource : PAItemControllerSource {
             }
         }
         endUpdates()
-        if (isAttached) {
-            for item in newItems {
-                item.performCreate(itemUpdatePublisher)
-            }
-        }
+
         
         oldItems.removeAll { (item) -> Bool in
             return retained.contains(item)

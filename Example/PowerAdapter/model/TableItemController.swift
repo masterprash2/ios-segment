@@ -15,8 +15,6 @@ enum TableItemType : Int, CaseIterable {
 }
 
 class TableItemController: PAController {
-   
-    
     
     private (set) var type: TableItemType
     
@@ -37,25 +35,24 @@ class TableItemController: PAController {
     }
     
     func onCreate(_ itemUpdatePublisher: PAItemUpdatePublisher) {
-           
-    }
-       
-    func onDestroy() {
-           
+        NSLog("OnCreate - %d",getId())
     }
     
     func onViewWillAppear() {
-        
+        NSLog("OnResume - %d",getId())
     }
     
-    func onViewWillDisapper() {
-        
+    func onViewDidDisapper() {
+        NSLog("OnPause - %d",getId())
+    }
+    
+    func onDestroy() {
+        NSLog("OnDestroy - %d",getId())
     }
     
     func isContentEqual(_ rhs: PAController) -> Bool {
         return self.id == rhs.getId()
     }
-    
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)

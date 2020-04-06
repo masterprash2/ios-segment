@@ -12,7 +12,7 @@
         <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="DataListCell" rowHeight="100" id="kjM-EP-Zto" customClass="DataListCell" customModule="PowerAdapter_Example" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="414" height="92"/>
             <autoresizingMask key="autoresizingMask"/>
-            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="kjM-EP-Zto" id="hS2-4v-LBr">
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="kjM-EP-Zto" id="hS2-4v-LBr" customClass="BaseTableCell" customModule="PowerAdapter_Example" customModuleProvider="target">
                 <rect key="frame" x="0.0" y="0.0" width="414" height="92"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
@@ -38,6 +38,9 @@
                     <constraint firstItem="WxE-oY-qQX" firstAttribute="top" secondItem="hS2-4v-LBr" secondAttribute="top" constant="10" id="wQ5-Z2-6Yg"/>
                 </constraints>
             </tableViewCellContentView>
+            <connections>
+                <outlet property="rootView" destination="hS2-4v-LBr" id="IEY-P1-u6x"/>
+            </connections>
             <point key="canvasLocation" x="-397.10144927536237" y="-33.482142857142854"/>
         </tableViewCell>
     </objects>

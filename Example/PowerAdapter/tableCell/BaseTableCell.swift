@@ -10,10 +10,14 @@ import Foundation
 import UIKit
 import PowerAdapter
 
-class BaseTableCell: UITableViewCell, PATableViewCell  {
+class BaseTableCell: PASegmentView  {
     
-    func bind(item: PAController) {
-        preconditionFailure("Should override this method")
+    override func bind(_ item: PAController) {
+        NSLog("ONBind")
+    }
+    
+    override func unBind() {
+        NSLog("ONUnBind")
     }
     
     

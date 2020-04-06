@@ -15,16 +15,17 @@ class ViewController: UIViewController {
     private let sectionSource = PASectionDatasource()
     
     private var tableDelegate : PATableDelegate!
+    private let lifecycleRegistery = PALifecycleRegistry()
     
     required init(coder: NSCoder) {
-        let cellProvider = TableCellProvider()
-        tableDelegate = PATableDelegate(cellProvider, sectionSource)
         super.init(coder: coder)!
     }
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        lifecycleRegistery.create()
+        tableDelegate = PATableDelegate(TableCellProvider(), sectionSource, lifecycleRegistery.lifecycle)
         // Do any additional setup after loading the view, typically from a nib.
         tableView.delegate = tableDelegate
         tableView.dataSource = tableDelegate
@@ -70,6 +71,18 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.lifecycleRegistery.viewWillAppear()
+        super.viewWillAppear(animated)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        self.lifecycleRegistery.viewDidDisappear()
+        super.viewDidDisappear(animated)
+    }
+    
+    
 
 }
 

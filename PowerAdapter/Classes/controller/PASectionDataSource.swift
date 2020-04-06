@@ -10,6 +10,16 @@ import RxSwift
 
 open class PASectionDatasource : ViewInteractor {
     
+    private var sections = [PATableSection]()
+    private let disposeBag = DisposeBag()
+    private let sectionUpdatePubliser = PublishSubject<(Int,PASourceUpdateEventModel)>()
+    private let itemUpdatePublisher = PAItemUpdatePublisher()
+    private var isAttached = false
+    
+    public init() {
+        
+    }
+    
     public func processWhenSafe(_ runnable: () -> Void) {
         runnable()
     }
@@ -18,13 +28,12 @@ open class PASectionDatasource : ViewInteractor {
         
     }
     
-    
-    private var sections = [PATableSection]()
-    private let disposeBag = DisposeBag()
-    private let sectionUpdatePubliser = PublishSubject<(Int,PASourceUpdateEventModel)>()
-    
-    public init() {
-        
+    public func onAttached() {
+        self.isAttached = true
+        sections.forEach { (value) in
+            value.item.performCreate(itemUpdatePublisher)
+            value.source.onAttached()
+        }
     }
     
     func count() -> Int {
@@ -32,6 +41,10 @@ open class PASectionDatasource : ViewInteractor {
     }
     
     public func addSection(item : PAController, source : PAItemControllerSource) {
+        if(isAttached) {
+            item.onCreate(self.itemUpdatePublisher)
+            source.onAttached()
+        }
         let section = PATableSection(PAItemController(item), source: source)
         source.observeAdapterUpdates().map { [unowned self] (value) -> PASourceUpdateEventModel in
             self.sectionContentUpdate(section, value)
@@ -40,8 +53,8 @@ open class PASectionDatasource : ViewInteractor {
         section.index = sections.count
         
         source.viewInteractor = self
-        
         sections.append(section)
+        
     }
     
     public func numberOfRowsInSection(_ section : Int) -> Int {
@@ -70,6 +83,13 @@ open class PASectionDatasource : ViewInteractor {
     
     func itemAtIndexPath(_ indexPath : IndexPath) -> PAItemController {
         return self.sections[indexPath.section].source.getItem(indexPath.row)
+    }
+    
+    public func onDetached() {
+        self.isAttached = false
+        sections.forEach { (value) in
+            value.source.onDetached()
+        }
     }
     
 }

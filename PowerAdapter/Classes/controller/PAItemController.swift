@@ -84,7 +84,7 @@ public class PAItemController : DiffAware, Hashable {
         switch (state) {
             case .RESUME : do {
                 self.state = .PAUSE
-                self.controller.onViewWillDisapper()
+                self.controller.onViewDidDisapper()
             }
             default: return
         }

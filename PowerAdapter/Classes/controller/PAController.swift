@@ -14,7 +14,7 @@ public protocol PAController {
     
     func onCreate(_ itemUpdatePublisher : PAItemUpdatePublisher)
     func onViewWillAppear()
-    func onViewWillDisapper()
+    func onViewDidDisapper()
     func onDestroy()
     
     func isContentEqual(_ rhs : PAController) -> Bool

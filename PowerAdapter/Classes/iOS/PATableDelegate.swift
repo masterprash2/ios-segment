@@ -8,10 +8,12 @@ public class PATableDelegate : NSObject, UITableViewDataSource, UITableViewDeleg
     private let cellProvider : PATableCellProvider
     private let sections : PASectionDatasource
     private let disposeBag = DisposeBag()
+    private let parentLifecycle : PALifecycle
     
-    public init(_ cellProvider : PATableCellProvider,_ sections : PASectionDatasource) {
+    public init(_ cellProvider : PATableCellProvider,_ sections : PASectionDatasource, _ parentLifecycle : PALifecycle) {
         self.cellProvider = cellProvider
         self.sections = sections
+        self.parentLifecycle = parentLifecycle
     }
     
     public func bind(_ tableView : UITableView) {
@@ -22,6 +24,7 @@ public class PATableDelegate : NSObject, UITableViewDataSource, UITableViewDeleg
             return true
         }.subscribe().disposed(by: disposeBag)
         self.cellProvider.registerCellsInternal(tableView)
+        self.sections.onAttached()
     }
     
     private func performUpdate(_ tableView : UITableView, _ update : (Int, PASourceUpdateEventModel) ){
@@ -55,6 +58,7 @@ public class PATableDelegate : NSObject, UITableViewDataSource, UITableViewDeleg
     }
     
     
+    
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.sections.numberOfRowsInSection(section)
     }
@@ -65,18 +69,32 @@ public class PATableDelegate : NSObject, UITableViewDataSource, UITableViewDeleg
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = itemAtIndexPath(indexPath)
-        let cell = self.cellProvider.cellForController(tableView, item)
+        let cell = self.cellProvider.cellForController(tableView, item.controller)
         let paTableCell = (cell as! PATableViewCell)
-        paTableCell.bind(item: item)
+        paTableCell.bind(item,parentLifecycle)
         return cell
     }
     
-    func itemAtIndexPath(_ indexPath: IndexPath) -> PAController {
-        return self.sections.itemAtIndexPath(indexPath).controller
+    public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let tableCell = cell as! PATableViewCell
+        tableCell.willDisplay()
     }
     
-    func sectionAtIndex(_ index : Int) -> PAItemController {
+    public func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let tableCell = cell as! PATableViewCell
+        tableCell.willEndDisplay()
+    }
+    
+    internal func itemAtIndexPath(_ indexPath: IndexPath) -> PAItemController {
+        return self.sections.itemAtIndexPath(indexPath)
+    }
+    
+    internal func sectionAtIndex(_ index : Int) -> PAItemController {
         return sections.sectionItemAtIndex(index)
+    }
+    
+    func unBind() {
+        sections.onDetached()
     }
     
 }
