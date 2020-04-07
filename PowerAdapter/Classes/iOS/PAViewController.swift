@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 open class PAViewController : UIViewController {
     
@@ -21,12 +22,12 @@ open class PAViewController : UIViewController {
     }
     
     
-    override public func viewWillAppear(_ animated: Bool) {
+    override open func viewWillAppear(_ animated: Bool) {
         self.lifecycleRegistery.viewWillAppear()
         super.viewWillAppear(animated)
     }
     
-    override public func viewDidDisappear(_ animated: Bool) {
+    override open func viewDidDisappear(_ animated: Bool) {
         self.lifecycleRegistery.viewDidDisappear()
         super.viewDidDisappear(animated)
     }

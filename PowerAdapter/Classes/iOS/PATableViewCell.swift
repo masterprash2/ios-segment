@@ -10,7 +10,7 @@ import RxSwift
 
 open class PATableViewCell : UITableViewCell {
     
-    @IBOutlet var rootView : PASegmentView!
+    @IBOutlet public var rootView : PASegmentView!
     
     private var lifecycleObserver : Disposable?
     private weak var parentLifecycle : PALifecycle?

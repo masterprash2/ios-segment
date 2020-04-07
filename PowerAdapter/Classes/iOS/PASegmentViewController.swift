@@ -10,15 +10,17 @@ import RxSwift
 
 open class PASegmentViewController : PAViewController {
     
-    @IBOutlet public var segmentView : PASegmentView!
+    @IBOutlet public var segmentView : PASegmentView?
     private var controller : PAItemController!
     private let itemUpdatePublisher = PAItemUpdatePublisher()
     private let disposeBag = DisposeBag()
     
     override open func viewDidLoad() {
-        controller = PAItemController(createController())
-        observeLifecyle()
-        self.segmentView.bindInternal(self.controller)
+        if(segmentView != nil) {
+            controller = PAItemController(createController())
+            observeLifecyle()
+            self.segmentView!.bindInternal(self.controller)
+        }
         return super.viewDidLoad()
     }
     

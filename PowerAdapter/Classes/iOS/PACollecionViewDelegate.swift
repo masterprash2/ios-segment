@@ -10,7 +10,7 @@ import RxSwift
 import UIKit
 
 
-class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UICollectionViewDataSource {
+open class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UICollectionViewDataSource {
     
     private let cellProvider : PACollectionViewCellProvider
     private let sections : PASectionDatasource
@@ -65,16 +65,16 @@ class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UICollectio
         return arr
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.sections.numberOfRowsInSection(section)
     }
     
     
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return sections.count()
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let item = itemAtIndexPath(indexPath)
         let cell = self.cellProvider.cellForController(collectionView, item.controller, indexPath)
@@ -83,13 +83,13 @@ class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UICollectio
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         let tableCell = cell as! PACollectionViewCell
         tableCell.willDisplay()
     }
     
     
-    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         let tableCell = cell as! PACollectionViewCell
         tableCell.willEndDisplay()
     }

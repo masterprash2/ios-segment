@@ -32,7 +32,7 @@ open class PACollectionViewCellProvider  {
         preconditionFailure("This method must be implemented")
     }
     
-    internal func cellForController(_ collectionView : UICollectionView,_ controller : PAController, _ indexPath : IndexPath) -> UICollectionViewCell {
+    open func cellForController(_ collectionView : UICollectionView,_ controller : PAController, _ indexPath : IndexPath) -> UICollectionViewCell {
         return collectionView.dequeueReusableCell(withReuseIdentifier: cellNameForController(controller), for: indexPath)
     }
     
