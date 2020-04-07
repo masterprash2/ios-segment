@@ -47,6 +47,8 @@
 		334F1B6223FBD085003BA463 /* ContentSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ContentSource.swift; path = dataSource/ContentSource.swift; sourceTree = "<group>"; };
 		33A881F1243B71E400FAF7D0 /* TableSegmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableSegmentView.swift; sourceTree = "<group>"; };
 		33A881F3243C458400FAF7D0 /* TableSegmentController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableSegmentController.swift; sourceTree = "<group>"; };
+		33A88820243CC4F900FAF7D0 /* PowerAdapter-Briding-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PowerAdapter-Briding-Header.h"; sourceTree = "<group>"; };
+		33A88829243D0CDF00FAF7D0 /* PowerAdapter_Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PowerAdapter_Example-Bridging-Header.h"; sourceTree = "<group>"; };
 		3CF9F68534B7B51156B2EFD8 /* Pods_PowerAdapter_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PowerAdapter_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		585489BE76B11DDDA6AED108 /* Pods-PowerAdapter_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PowerAdapter_Example.release.xcconfig"; path = "Target Support Files/Pods-PowerAdapter_Example/Pods-PowerAdapter_Example.release.xcconfig"; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* PowerAdapter_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PowerAdapter_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -147,6 +149,8 @@
 				607FACD31AFB9204008FA782 /* Supporting Files */,
 				33A881F1243B71E400FAF7D0 /* TableSegmentView.swift */,
 				33A881F3243C458400FAF7D0 /* TableSegmentController.swift */,
+				33A88820243CC4F900FAF7D0 /* PowerAdapter-Briding-Header.h */,
+				33A88829243D0CDF00FAF7D0 /* PowerAdapter_Example-Bridging-Header.h */,
 			);
 			name = "Example for PowerAdapter";
 			path = PowerAdapter;
@@ -261,7 +265,7 @@
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1130;
 					};
 					607FACE41AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
@@ -522,6 +526,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "PowerAdapter/PowerAdapter-Briding-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -567,6 +572,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "PowerAdapter/PowerAdapter-Briding-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -577,11 +583,14 @@
 			baseConfigurationReference = A232B48CA17E56212DC73FDB /* Pods-PowerAdapter_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = PowerAdapter/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "PowerAdapter/PowerAdapter_Example-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
 			};
@@ -592,11 +601,13 @@
 			baseConfigurationReference = 585489BE76B11DDDA6AED108 /* Pods-PowerAdapter_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = PowerAdapter/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "PowerAdapter/PowerAdapter_Example-Bridging-Header.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
 			};
