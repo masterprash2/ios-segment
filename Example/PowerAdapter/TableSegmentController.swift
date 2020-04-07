@@ -1,0 +1,82 @@
+//
+//  TableSegmentController.swift
+//  PowerAdapter_Example
+//
+//  Created by Prashant Rathore on 07/04/20.
+//  Copyright © 2020 CocoaPods. All rights reserved.
+//
+
+import Foundation
+import PowerAdapter
+
+class TableSegmentController: PAController {
+    
+    let sectionSource = PASectionDatasource()
+    
+    func getType() -> Int {
+        return 1
+    }
+    
+    func getId() -> Int {
+        return 1
+    }
+    
+    func onCreate(_ itemUpdatePublisher: PAItemUpdatePublisher) {
+        self.sectionSource.addSection(item: TableItemController(id: 11111, type: .section), source: createDataSource())
+        self.sectionSource.addSection(item: TableItemController(id: 11112, type: .section), source: createMultiPlexSource())
+    }
+    
+    func onViewWillAppear() {
+        
+    }
+    
+    func onViewDidDisapper() {
+        
+    }
+    
+    func onDestroy() {
+        
+    }
+    
+    func isContentEqual(_ rhs: PAController) -> Bool {
+        return true
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        
+    }
+    
+    
+    private func createDataSource() -> PAItemControllerSource {
+        let source = PAArraySource()
+        setArraySourceItemsDelayed(source: source)
+        return source
+    }
+    
+    private func createMultiPlexSource() -> PAItemControllerSource {
+        let source = PAMultiplexSource()
+        source.addSource(adapter: createDataSource())
+        source.addSource(adapter: createDataSource())
+        source.addSource(adapter: createDataSource())
+        source.addSource(adapter: createDataSource())
+        return source
+    }
+    
+    //    private var counter = 0
+    
+    private func setArraySourceItemsDelayed(source : PAArraySource) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { // in half a second...
+            source.setItems(self.createItems())
+            //            self.setArraySourceItemsDelayed(source: source)
+        }
+    }
+    
+    private func createItems() -> [TableItemController] {
+        var arr = [TableItemController]()
+        for index in 1...100 {
+            arr.append(TableItemController(id: index, type: .content))
+        }
+        //        counter = counter + 5
+        return arr
+    }
+}

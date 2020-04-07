@@ -8,6 +8,7 @@
 
 import Foundation
 import PowerAdapter
+import RxSwift
 
 enum TableItemType : Int, CaseIterable {
     case section
@@ -19,6 +20,7 @@ class TableItemController: PAController {
     private (set) var type: TableItemType
     
     private (set) var id: Int
+    
     
     
     init(id : Int, type : TableItemType) {
@@ -57,5 +59,4 @@ class TableItemController: PAController {
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
-    
 }

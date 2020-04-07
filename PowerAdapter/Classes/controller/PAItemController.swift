@@ -8,6 +8,7 @@
 
 import Foundation
 import DeepDiff
+import RxSwift
 
 public class PAItemController : DiffAware, Hashable {
     
@@ -16,7 +17,7 @@ public class PAItemController : DiffAware, Hashable {
     }
     
     
-     enum State {
+     public enum State {
         case FRESH
         case CREATE
         case RESUME
@@ -31,8 +32,18 @@ public class PAItemController : DiffAware, Hashable {
     let controller : PAController
     private weak var itemUpdatePublisher : PAItemUpdatePublisher?
     
-    private (set) var state = State.FRESH
+    private var state = State.FRESH {
+        didSet {
+            lifecyclePublisher.onNext(self.state)
+        }
+    }
     private var attachedSources = NSMutableSet()
+    
+    private let lifecyclePublisher = BehaviorSubject(value: State.FRESH)
+    
+    public func observeLifecycle() -> Observable<State> {
+        return lifecyclePublisher
+    }
   
     init(_ controller : PAController) {
         self.controller = controller

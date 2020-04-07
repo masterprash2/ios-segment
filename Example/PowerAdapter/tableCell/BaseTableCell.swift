@@ -12,12 +12,12 @@ import PowerAdapter
 
 class BaseTableCell: PASegmentView  {
     
-    override func bind(_ item: PAController) {
-        NSLog("ONBind")
+    override func bind() {
+        
     }
     
     override func unBind() {
-        NSLog("ONUnBind")
+        
     }
     
     

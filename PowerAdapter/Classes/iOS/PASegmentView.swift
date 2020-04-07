@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RxSwift
 
 open class PASegmentView : UIView {
     
@@ -14,31 +15,60 @@ open class PASegmentView : UIView {
     }
     
     
-    private var controller : PAItemController!
+    private var itemController : PAItemController!
     
     private var isBounded = false
+    
+    private let lifecycleRegistry = PALifecycleRegistry()
+    private var lifecycleObserver : Disposable?
+    
+    public func getController() -> PAController {
+        return itemController.controller
+    }
     
     internal func bindInternal(_ controller : PAItemController) {
         unBindInternal()
         self.isBounded = true
-        self.controller = controller
-        self.bind(controller.controller)
+        self.itemController = controller
+        observeLifecycle()
+        self.bind()
     }
     
+    public func getLifecycleOwner() -> PALifecycle {
+        return lifecycleRegistry.lifecycle
+    }
     
-    open func bind(_ item : PAController) {
+    open func bind() {
         preconditionFailure("Should override this method")
     }
     
+    private func observeLifecycle() {
+        lifecycleObserver = itemController.observeLifecycle().map {[weak self] (state) -> PAItemController.State in
+            self?.updateLifecycle(state: state)
+            return state
+        }.subscribe()
+    }
+    
+    private func updateLifecycle(state : PAItemController.State) {
+        switch state {
+        case .CREATE: lifecycleRegistry.create()
+        case .RESUME: lifecycleRegistry.viewWillAppear()
+        case .PAUSE: lifecycleRegistry.viewDidDisappear()
+        case .DESTROY: lifecycleRegistry.destroy()
+        default : return
+        }
+    }
+    
     internal func viewWillAppear() {
-        self.controller.performResume()
+        self.itemController.performResume()
     }
     
     internal func viewDidDisappear() {
-        self.controller.performPause()
+        self.itemController.performPause()
     }
     
     func unBindInternal() {
+        lifecycleObserver?.dispose()
         if(isBounded) {
             self.unBind()
         }
