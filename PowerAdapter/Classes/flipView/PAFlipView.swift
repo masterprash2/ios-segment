@@ -73,7 +73,7 @@ public class PAFlipView : UIView {
         let topLayer = CALayer()
         topLayer.frame = rect
         topLayer.masksToBounds = true
-        topLayer.contentsGravity = kCAGravityBottom
+        topLayer.contentsGravity = .bottom
 
         backgroundLayer?.addSublayer(topLayer)
 
@@ -82,7 +82,7 @@ public class PAFlipView : UIView {
         let bottomLayer = CALayer()
         bottomLayer.frame = rect
         bottomLayer.masksToBounds = true
-        bottomLayer.contentsGravity = kCAGravityTop
+        bottomLayer.contentsGravity = .top
 
         backgroundLayer?.addSublayer(bottomLayer)
 
@@ -127,10 +127,10 @@ public class PAFlipView : UIView {
 
         if flipDirection == .FlipDirectionBottom {
             backLayer.contents = currentImage?.cgImage
-            backLayer.contentsGravity = kCAGravityBottom
+            backLayer.contentsGravity = .bottom
 
             frontLayer.contents = newImage?.cgImage
-            frontLayer.contentsGravity = kCAGravityTop
+            frontLayer.contentsGravity = .top
 
             var transform = CATransform3DMakeRotation(0.0, 1.0, 0.0, 0.0)
             transform.m34 = -1.0 / 500.0
@@ -141,11 +141,11 @@ public class PAFlipView : UIView {
             currentAngle = startFlipAngle
             endFlipAngle = .pi
         } else {
-            backLayer.contentsGravity = kCAGravityBottom
+            backLayer.contentsGravity = .bottom
             backLayer.contents = newImage?.cgImage
 
             frontLayer.contents = currentImage?.cgImage
-            frontLayer.contentsGravity = kCAGravityTop
+            frontLayer.contentsGravity = .top
 
             var transform = CATransform3DMakeRotation(.pi, 1.0, 0.0, 0.0)
             transform.m34 = 1.0 / 500.0
