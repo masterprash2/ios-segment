@@ -9,9 +9,6 @@ import Foundation
 import RxSwift
 import UIKit
 
-public protocol PACollectionViewPageDelegate {
-    func onPageChanged(_ collectionView : UICollectionView, pagePath: IndexPath)
-}
 
 open class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UICollectionViewDataSource {
     
@@ -19,16 +16,13 @@ open class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UIColl
     private let sections : PASectionDatasource
     private let disposeBag = DisposeBag()
     private let parentLifecycle : PALifecycle
-    private let isPagingEnabled : Bool
     weak var collectionView : UICollectionView?
-    private var currentPage : IndexPath = IndexPath.init(row: 0, section: 0)
-    public var pageChangeDelegate : PACollectionViewPageDelegate?
+    private var updates = [(Int, PASourceUpdateEventModel)]()
     
-    public init(_ cellProvider : PACollectionViewCellProvider,_ sections : PASectionDatasource, _ parentLifecycle : PALifecycle, isPagingEnabled : Bool) {
+    public init(_ cellProvider : PACollectionViewCellProvider,_ sections : PASectionDatasource, _ parentLifecycle : PALifecycle) {
         self.cellProvider = cellProvider
         self.sections = sections
         self.parentLifecycle = parentLifecycle
-        self.isPagingEnabled = isPagingEnabled
     }
     
     public func bind(_ collectionView : UICollectionView) {
@@ -37,7 +31,6 @@ open class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UIColl
         self.sections.invalidateContentCount()
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.isPagingEnabled = isPagingEnabled
         self.sections.observeSectionUpdateEvents().map {[weak collectionView,weak self] (update) -> Bool in
             if(collectionView != nil) {
                 self?.performUpdate(collectionView!, update)
@@ -48,7 +41,7 @@ open class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UIColl
         self.sections.onAttached()
     }
     
-    private var updates = [(Int, PASourceUpdateEventModel)]()
+    
     
     private func performUpdate(_ collectionView : UICollectionView, _ update : (Int, PASourceUpdateEventModel) ){
         switch update.1.type {
@@ -60,8 +53,8 @@ open class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UIColl
             }
         }) { (value) in
             self.sections.invalidateContentCount()
-        }
-        
+            }
+            
         default : updates.append(update)
         }
         
@@ -112,7 +105,6 @@ open class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UIColl
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
         let item = itemAtIndexPath(indexPath)
         let cell = self.cellProvider.cellForController(collectionView, item.controller, indexPath)
         let paTableCell = (cell as! PACollectionViewCell)
@@ -120,15 +112,13 @@ open class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UIColl
         return cell
     }
     
-    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if(!self.isPagingEnabled || self.currentPage == indexPath) {
-            let tableCell = cell as! PACollectionViewCell
-            tableCell.willDisplay()
-        }
+    open func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        let tableCell = cell as! PACollectionViewCell
+        tableCell.willDisplay()
+        
     }
     
-    
-    public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    open func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         let tableCell = cell as! PACollectionViewCell
         tableCell.willEndDisplay()
     }
@@ -147,45 +137,5 @@ open class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UIColl
         self.collectionView = nil
         sections.onDetached()
     }
-    
-    
-    open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        updateCurrentPage()
-    }
-    
-    
-    open func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        updateCurrentPage()
-    }
-    
-    open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        updateCurrentPage()
-    }
-    
-    
-    private func updateCurrentPage() {
-        if(self.isPagingEnabled) {
-            if let collectionView = self.collectionView {
-                let center = CGPoint(x: collectionView.contentOffset.x + (collectionView.frame.width / 2), y: collectionView.contentOffset.y + (collectionView.frame.height / 2))
-                if let ip = collectionView.indexPathForItem(at: center) {
-                    if(self.currentPage != ip) {
-                        setCurrentPage(collectionView, ip)
-                    }
-                }
-            }
-        }
-    }
-    
-    private func setCurrentPage(_ collectionView : UICollectionView, _ ip : IndexPath) {
-        let oldCell = collectionView.cellForItem(at: self.currentPage)
-        (oldCell as? PACollectionViewCell)?.willEndDisplay()
-        self.currentPage = ip
-        let newCell = collectionView.cellForItem(at: self.currentPage)
-        (newCell as? PACollectionViewCell)?.willDisplay()
-        self.pageChangeDelegate?.onPageChanged(collectionView, pagePath: ip)
-    }
-    
-    
-    
     
 }
