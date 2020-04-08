@@ -19,6 +19,14 @@ class TableCellProvider : PATableCellProvider {
         }
     }
     
+    override func cellForController(_ tableView: UITableView, _ controller: PAController) -> UITableViewCell {
+        let cell = super.cellForController(tableView, controller) as! PATableViewCell
+        cell.bounds.size = tableView.frame.size
+        cell.rootView.bounds.size = tableView.frame.size
+        return cell;
+    }
+    
+    
     override func cellNameForController(_ controller: PAController) -> String {
         return cellNameForType(TableItemType(rawValue: controller.getType())!)
     }
@@ -30,6 +38,10 @@ class TableCellProvider : PATableCellProvider {
         case .section:
             return "DataListCell"
         }
+    }
+    
+    override func heightForCell(_ tableView: UITableView, _ controller: PAController) -> CGFloat {
+        return tableView.frame.size.height
     }
     
     

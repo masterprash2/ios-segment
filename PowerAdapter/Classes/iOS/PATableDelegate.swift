@@ -2,21 +2,36 @@ import Foundation
 import RxSwift
 import UIKit
 
+public protocol PATableViewPageDelegate {
+    func onPageChanged(_ tableView : UITableView, pagePath: IndexPath)
+}
 
 public class PATableDelegate : NSObject, UITableViewDataSource, UITableViewDelegate {
+
     
     private let cellProvider : PATableCellProvider
     private let sections : PASectionDatasource
     private let disposeBag = DisposeBag()
     private let parentLifecycle : PALifecycle
+    private let isPagingEnabled : Bool
+    weak var tableView : UITableView?
+    private var currentPage : IndexPath = IndexPath.init(row: 0, section: 0)
+    public var pageChangeDelegate : PATableViewPageDelegate?
     
-    public init(_ cellProvider : PATableCellProvider,_ sections : PASectionDatasource, _ parentLifecycle : PALifecycle) {
+    
+    public init(_ cellProvider : PATableCellProvider,_ sections : PASectionDatasource, _ parentLifecycle : PALifecycle, _ isPagingEnabled : Bool) {
         self.cellProvider = cellProvider
         self.sections = sections
         self.parentLifecycle = parentLifecycle
+        self.isPagingEnabled = isPagingEnabled
     }
     
     public func bind(_ tableView : UITableView) {
+        unBind()
+        self.tableView = tableView
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.isPagingEnabled = isPagingEnabled
         self.sections.observeSectionUpdateEvents().map {[weak tableView,weak self] (update) -> Bool in
             if(tableView != nil) {
                 self?.performUpdate(tableView!, update)
@@ -76,8 +91,10 @@ public class PATableDelegate : NSObject, UITableViewDataSource, UITableViewDeleg
     }
     
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let tableCell = cell as! PATableViewCell
-        tableCell.willDisplay()
+        if(!self.isPagingEnabled || self.currentPage == indexPath) {
+            let tableCell = cell as! PATableViewCell
+            tableCell.willDisplay()
+        }
     }
     
     public func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -93,8 +110,54 @@ public class PATableDelegate : NSObject, UITableViewDataSource, UITableViewDeleg
         return sections.sectionItemAtIndex(index)
     }
     
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return cellProvider.heightForCell(tableView, itemAtIndexPath(indexPath).controller)
+    }
+    
     func unBind() {
+        self.tableView?.dataSource = nil
+        self.tableView?.delegate = nil
+        self.tableView = nil
         sections.onDetached()
     }
+    
+    
+    open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        updateCurrentPage()
+    }
+    
+    
+    open func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        updateCurrentPage()
+    }
+    
+    open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        updateCurrentPage()
+    }
+    
+    
+    private func updateCurrentPage() {
+        if(self.isPagingEnabled) {
+            if let tableView = self.tableView {
+                let center = CGPoint(x: tableView.contentOffset.x + (tableView.frame.width / 2), y: tableView.contentOffset.y + (tableView.frame.height / 2))
+                if let ip = tableView.indexPathForRow(at: center) {
+                    if(self.currentPage != ip) {
+                        setCurrentPage(tableView, ip)
+                    }
+                }
+            }
+        }
+    }
+    
+    private func setCurrentPage(_ tableView : UITableView, _ ip : IndexPath) {
+        let oldCell = tableView.cellForRow(at: self.currentPage)
+        (oldCell as? PATableViewCell)?.willEndDisplay()
+        self.currentPage = ip
+        let newCell = tableView.cellForRow(at: self.currentPage)
+        (newCell as? PATableViewCell)?.willDisplay()
+        self.pageChangeDelegate?.onPageChanged(tableView, pagePath: ip)
+    }
+    
+    
     
 }

@@ -80,4 +80,7 @@ open class PASegmentView : UIView {
     }
     
     
+    func computeSize(_ parent : UIView) -> CGSize {
+        return self.bounds.size
+    }
 }

@@ -43,13 +43,17 @@ open class PACollectionViewCell : UICollectionViewCell {
     }
     
     public func willDisplay() {
-        self.isInView = true
-        viewWillAppear()
+        if(!self.isInView) {
+            self.isInView = true
+            viewWillAppear()
+        }
     }
     
     public func willEndDisplay() {
-        self.isInView = false
-        viewDidDisappear()
+        if(self.isInView) {
+            self.isInView = false
+            viewDidDisappear()
+        }
     }
     
     private func viewWillAppear() {

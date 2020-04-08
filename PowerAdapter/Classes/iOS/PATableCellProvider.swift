@@ -31,8 +31,12 @@ open class PATableCellProvider  {
         preconditionFailure("This method must be implemented")
     }
     
-    internal func cellForController(_ tableView : UITableView,_ controller : PAController) -> UITableViewCell {
+    open func cellForController(_ tableView : UITableView,_ controller : PAController) -> UITableViewCell {
         return tableView.dequeueReusableCell(withIdentifier: cellNameForController(controller))!
     }
     
+    
+    open func heightForCell(_ tableView : UITableView,_ controller : PAController) -> CGFloat {
+        preconditionFailure("This method must be implemented")
+    }
 }

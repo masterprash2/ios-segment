@@ -265,12 +265,11 @@ public class PAFlipView : UIView {
         numberOfPages = self.dataSource!.numberOfPagesinFlipper(self)
         currentPage = 0
         //pagecontrol current page
-//        currentPage = 1
         perform(#selector(setFirstPage), with: nil, afterDelay: 0.001)
     }
     
     @objc func setFirstPage() {
-        setCurrentPage(1, animated: false)
+        setCurrentPage(currentPage, animated: false)
     }
 
     func canSetCurrentPage(_ page: Int) -> Bool {

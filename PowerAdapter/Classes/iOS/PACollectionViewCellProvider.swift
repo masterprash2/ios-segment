@@ -36,4 +36,8 @@ open class PACollectionViewCellProvider  {
         return collectionView.dequeueReusableCell(withReuseIdentifier: cellNameForController(controller), for: indexPath)
     }
     
+    
+    open func heightForCell(_ collectionView : UICollectionView,_ controller : PAController) -> CGFloat {
+        preconditionFailure("This method must be implemented")
+    }
 }

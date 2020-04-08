@@ -11,5 +11,11 @@ import PowerAdapter
 
 class DataListCell: PATableViewCell {
     
+    override class func awakeFromNib() {
+        super.awakeFromNib()
+    }
     
+    override func computeSize(_ parent: UIView) -> CGSize {
+        return parent.frame.size
+    }
 }

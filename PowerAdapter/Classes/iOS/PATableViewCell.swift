@@ -17,6 +17,10 @@ open class PATableViewCell : UITableViewCell {
     
     private var isInView = false
     
+    open func computeSize(_ parent : UIView) -> CGSize {
+        return self.rootView.computeSize(parent)
+    }
+    
     internal func bind(_ item : PAItemController, _ parentLifecycle : PALifecycle) {
         rootView.bindInternal(item)
         self.parentLifecycle = parentLifecycle
@@ -42,13 +46,17 @@ open class PATableViewCell : UITableViewCell {
     }
     
     internal func willDisplay() {
-        self.isInView = true
-        viewWillAppear()
+        if(!self.isInView) {
+            self.isInView = true
+            viewWillAppear()
+        }
     }
     
     internal func willEndDisplay() {
-        self.isInView = false
-        viewDidDisappear()
+        if(self.isInView) {
+            self.isInView = false
+            viewDidDisappear()
+        }
     }
     
     private func viewWillAppear() {
@@ -60,5 +68,4 @@ open class PATableViewCell : UITableViewCell {
     private func viewDidDisappear() {
         self.rootView.viewDidDisappear()
     }
-    
 }
