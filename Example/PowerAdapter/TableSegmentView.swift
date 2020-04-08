@@ -13,16 +13,16 @@ import UIKit
 class TableSegmentView : PASegmentView {
     
     
-    @IBOutlet var tableView : UITableView!
+    @IBOutlet var tableView : UICollectionView!
     
-    private var tableDelegate : PATableDelegate!
+    private var tableDelegate : PACollectionViewDelegate!
     
     override func bind() {
-        self.tableView = UITableView(frame: self.bounds)
+        self.tableView = UICollectionView.init(frame: self.bounds, collectionViewLayout: UICollectionViewFlowLayout.init())
         addSubview(self.tableView)
         
         let controller = getController() as! TableSegmentController
-        tableDelegate = PATableDelegate(TableCellProvider(), controller.sectionSource, getLifecycleOwner(), true)
+        tableDelegate = PACollectionViewDelegate(TableCellProvider(), controller.sectionSource, getLifecycleOwner(), isPagingEnabled: true)
         tableView.bounds = self.bounds
         tableView.backgroundColor = UIColor.yellow
         tableDelegate.bind(self.tableView)

@@ -9,13 +9,10 @@
 import Foundation
 import PowerAdapter
 
-class DataListCell: PATableViewCell {
+class DataListCell: PACollectionViewCell {
     
     override class func awakeFromNib() {
         super.awakeFromNib()
     }
     
-    override func computeSize(_ parent: UIView) -> CGSize {
-        return parent.frame.size
-    }
 }

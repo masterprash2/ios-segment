@@ -31,7 +31,7 @@ open class PATableCellProvider  {
         preconditionFailure("This method must be implemented")
     }
     
-    open func cellForController(_ tableView : UITableView,_ controller : PAController) -> UITableViewCell {
+    open func cellForController(_ tableView : UITableView,_ controller : PAController, _ indexPath : IndexPath) -> UITableViewCell {
         return tableView.dequeueReusableCell(withIdentifier: cellNameForController(controller))!
     }
     

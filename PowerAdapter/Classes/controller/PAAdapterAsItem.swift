@@ -41,6 +41,7 @@ class PAAdapterAsItem {
         case .itemMoved : parent?.notifyItemMoved(actualStartPosition, newPosition: event.newPosition)
         case .updateEnds : parent?.endUpdates()
         case .sectionMoved: preconditionFailure("This is invalid call")
+        case .sectionInserted : preconditionFailure("This is invalid call")
         }
         parent?.updateIndexes(self)
     }

@@ -10,7 +10,7 @@ import RxSwift
 
 open class PATableViewCell : UITableViewCell {
     
-    @IBOutlet public var rootView : PASegmentView!
+    @IBOutlet public var rootView : PASegmentView?
     
     private var lifecycleObserver : Disposable?
     private weak var parentLifecycle : PALifecycle?
@@ -18,11 +18,11 @@ open class PATableViewCell : UITableViewCell {
     private var isInView = false
     
     open func computeSize(_ parent : UIView) -> CGSize {
-        return self.rootView.computeSize(parent)
+        return self.rootView!.computeSize(parent)
     }
     
     internal func bind(_ item : PAItemController, _ parentLifecycle : PALifecycle) {
-        rootView.bindInternal(item)
+        rootView!.bindInternal(item)
         self.parentLifecycle = parentLifecycle
         observeParentLifecycle(parentLifecycle)
     }
@@ -61,11 +61,11 @@ open class PATableViewCell : UITableViewCell {
     
     private func viewWillAppear() {
         if(self.isInView && self.parentLifecycle?.viewState == PALifecycle.State.resume) {
-            self.rootView.viewWillAppear()
+            self.rootView!.viewWillAppear()
         }
     }
     
     private func viewDidDisappear() {
-        self.rootView.viewDidDisappear()
+        self.rootView!.viewDidDisappear()
     }
 }

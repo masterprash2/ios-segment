@@ -60,6 +60,8 @@ public class PATableDelegate : NSObject, UITableViewDataSource, UITableViewDeleg
             tableView.endUpdates()
         case .sectionMoved:
             tableView.moveSection(update.1.position, toSection: update.1.newPosition)
+        case .sectionInserted:
+            tableView.insertSections(IndexSet.init(arrayLiteral: update.0), with: .automatic)
         }
         
     }
@@ -84,7 +86,7 @@ public class PATableDelegate : NSObject, UITableViewDataSource, UITableViewDeleg
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = itemAtIndexPath(indexPath)
-        let cell = self.cellProvider.cellForController(tableView, item.controller)
+        let cell = self.cellProvider.cellForController(tableView, item.controller,indexPath)
         let paTableCell = (cell as! PATableViewCell)
         paTableCell.bind(item,parentLifecycle)
         return cell
@@ -100,6 +102,9 @@ public class PATableDelegate : NSObject, UITableViewDataSource, UITableViewDeleg
     public func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let tableCell = cell as! PATableViewCell
         tableCell.willEndDisplay()
+        if(self.currentPage == indexPath) {
+            self.currentPage = IndexPath(row: -1, section: -1)
+        }
     }
     
     internal func itemAtIndexPath(_ indexPath: IndexPath) -> PAItemController {

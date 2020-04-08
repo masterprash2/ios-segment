@@ -34,6 +34,7 @@ open class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UIColl
     public func bind(_ collectionView : UICollectionView) {
         unBind()
         self.collectionView = collectionView
+        self.sections.invalidateContentCount()
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.isPagingEnabled = isPagingEnabled
@@ -47,10 +48,33 @@ open class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UIColl
         self.sections.onAttached()
     }
     
+    private var updates = [(Int, PASourceUpdateEventModel)]()
+    
     private func performUpdate(_ collectionView : UICollectionView, _ update : (Int, PASourceUpdateEventModel) ){
+        switch update.1.type {
+        case .updateBegins: updates = [(Int, PASourceUpdateEventModel)]()
+        case .updateEnds: collectionView.performBatchUpdates({
+            updates.forEach { (value) in
+                performUpdateImmediate(collectionView, value)
+                self.sections.invalidateContentCount()
+            }
+        }) { (value) in
+            self.sections.invalidateContentCount()
+        }
+        
+        default : updates.append(update)
+        }
+        
+    }
+    
+    
+    private func performUpdateImmediate(_ collectionView : UICollectionView, _ update : (Int, PASourceUpdateEventModel) )
+    {
         switch update.1.type {
         case .updateBegins: return
         //            collectionView.beginUpdates()
+        case .sectionInserted:
+            collectionView.insertSections(IndexSet.init(arrayLiteral: update.0))
         case .itemsChanges:
             collectionView.reloadItems(at: createIndexPathArray(update.0, update.1))
         case .itemsRemoved:
@@ -61,12 +85,12 @@ open class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UIColl
             let oldPath = IndexPath(row: update.1.position, section: update.0)
             let newPath = IndexPath(row: update.1.newPosition, section: update.0)
             collectionView.moveItem(at: oldPath, to: newPath)
-        case .updateEnds: return
-        //            collectionView.endUpdates()
         case .sectionMoved:
             collectionView.moveSection(update.1.position, toSection: update.1.newPosition)
-            
+        case .updateEnds: return
         }
+        
+        
         
     }
     

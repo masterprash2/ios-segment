@@ -17,6 +17,7 @@ enum UpdateEventType {
     case itemMoved
     case sectionMoved
     case updateEnds
+    case sectionInserted
 }
 
 internal struct PASourceUpdateEventModel  {
