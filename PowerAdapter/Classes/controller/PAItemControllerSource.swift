@@ -11,8 +11,8 @@ import RxSwift
 
 
 public protocol ViewInteractor {
-    func processWhenSafe(_ runnable: () -> Void)
-    func cancelOldProcess(_ runnable: () -> Void)
+    func processWhenSafe(_ runnable: @escaping () -> Void)
+    func cancelOldProcess(_ runnable: @escaping () -> Void)
 }
 
 
@@ -55,7 +55,7 @@ public protocol ViewInteractor {
         if(limit < 0) {
             newLimit = 0
         }
-        processWhenSafe { setMaxLimitWhenSafe(newLimit) }
+        processWhenSafe { self.setMaxLimitWhenSafe(newLimit) }
     }
 
     private func setMaxLimitWhenSafe(_ limit: Int) {
@@ -67,7 +67,7 @@ public protocol ViewInteractor {
     }
 
     func removeMaxLimit() {
-        processWhenSafe{ removeMaxLimitWhenSafe() }
+        processWhenSafe{ self.removeMaxLimitWhenSafe() }
     }
 
     private func removeMaxLimitWhenSafe() {
@@ -170,7 +170,7 @@ public protocol ViewInteractor {
         publishUpdateEvent(0, UpdateEventType.updateBegins, 0)
     }
 
-    func processWhenSafe(_ runnable: () -> Void) {
+    func processWhenSafe(_ runnable: @escaping () -> Void) {
         if(viewInteractor != nil) {
             viewInteractor?.processWhenSafe(runnable)
         }

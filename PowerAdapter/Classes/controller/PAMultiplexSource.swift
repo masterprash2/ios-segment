@@ -51,7 +51,7 @@ public class PAMultiplexSource : PAProxySource {
     public func insertSource(_ index: Int, _  adapter: PAItemControllerSource) {
         let item = PAAdapterAsItem(adapter: adapter,parent: self)
         adapter.viewInteractor = viewInteractor
-        processWhenSafe{ addSourceImmediate(index, item) }
+        processWhenSafe{ self.addSourceImmediate(index, item) }
     }
 
     private func addSourceImmediate(_ index: Int,_ item: PAAdapterAsItem) {
@@ -123,7 +123,7 @@ public class PAMultiplexSource : PAProxySource {
     }
 
     public func removeAdapter(_ removeAdapterAtPosition: Int) {
-        processWhenSafe{ removeAdapterImmediate(removeAdapterAtPosition) }
+        processWhenSafe{ self.removeAdapterImmediate(removeAdapterAtPosition) }
     }
 
     private func removeAdapterImmediate(_ removeAdapterAtPosition: Int) {

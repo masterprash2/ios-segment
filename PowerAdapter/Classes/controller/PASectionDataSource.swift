@@ -20,8 +20,15 @@ open class PASectionDatasource : ViewInteractor {
         
     }
     
-    public func processWhenSafe(_ runnable: () -> Void) {
-        runnable()
+    public func processWhenSafe(_ runnable: @escaping () -> Void) {
+        if(Thread.isMainThread) {
+            runnable()
+        }
+        else {
+            DispatchQueue.main.async {
+                runnable()
+            }
+        }
     }
     
     public func cancelOldProcess(_ runnable: () -> Void) {

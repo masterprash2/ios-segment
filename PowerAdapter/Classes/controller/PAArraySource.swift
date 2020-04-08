@@ -43,7 +43,7 @@ open class PAArraySource : PAItemControllerSource {
         var transformation = newItems.map({ (input) -> PAItemController in
             return PAItemController(input)
         })
-        processWhenSafe { switchItemImmediate(useDiffProcess, &transformation) }
+        processWhenSafe { self.switchItemImmediate(useDiffProcess, &transformation) }
     }
     
     private func switchItemImmediate(_ useDiffProcess: Bool,_ newItems: inout [PAItemController]) {
@@ -125,7 +125,7 @@ open class PAArraySource : PAItemControllerSource {
 //    }
     
     func replaceItem(_ index: Int, _ item: PAController) {
-        processWhenSafe{ replaceItemWhenSafe(index, item) }
+        processWhenSafe{ self.replaceItemWhenSafe(index, item) }
     }
     
     private func replaceItemWhenSafe(_ index: Int,_ item: PAController) {
@@ -167,7 +167,7 @@ open class PAArraySource : PAItemControllerSource {
         processWhenSafe{
             let index = self.controllers.firstIndex(of: itemController as! PAItemController)
             if (index ?? -1 >= 0) {
-                notifyItemsChanged(index!, itemCount: 1)
+                self.notifyItemsChanged(index!, itemCount: 1)
             }
         }
     }

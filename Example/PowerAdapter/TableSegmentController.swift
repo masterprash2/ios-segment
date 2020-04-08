@@ -22,12 +22,14 @@ class TableSegmentController: PAController {
     }
     
     func onCreate(_ itemUpdatePublisher: PAItemUpdatePublisher) {
-        self.sectionSource.addSection(item: TableItemController(id: 11111, type: .section), source: createDataSource())
-        self.sectionSource.addSection(item: TableItemController(id: 11112, type: .section), source: createMultiPlexSource())
+        
     }
     
     func onViewWillAppear() {
-        
+        DispatchQueue.global(qos: .background).async {
+            self.sectionSource.addSection(item: TableItemController(id: 11111, type: .section), source: self.createDataSource())
+            self.sectionSource.addSection(item: TableItemController(id: 11112, type: .section), source: self.createMultiPlexSource())
+        }
     }
     
     func onViewDidDisapper() {
