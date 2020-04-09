@@ -9,7 +9,9 @@
 import UIKit
 import PowerAdapter
 
-class ViewController: PASegmentViewController {
+class ViewController: PAViewController {
+    
+    @IBOutlet var segmentContainer : PASegmentViewContainer!
     
     required init(coder: NSCoder) {
         super.init(coder: coder)!
@@ -17,13 +19,25 @@ class ViewController: PASegmentViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        segmentContainer.bindParentLifecyle(getLifecycleOwner())
+        let view = TableSegmentView(frame: CGRect(x: 0, y: 0, width: self.segmentContainer.frame.size.width, height: self.segmentContainer.frame.size.height))
+        segmentContainer.setSegment(PASegment(view,TableSegmentController()))
+        
+    }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        let view = TableSegmentView(frame: CGRect(x: 0, y: 0, width: self.segmentContainer.frame.size.width, height: self.segmentContainer.frame.size.height))
+        
+        segmentContainer.setSegment(PASegment(view,TableSegmentController()))
     }
     
     
-    override func createController() -> PAController {
-        return TableSegmentController()
-    }
+    
+    
+//    override func createController() -> PAController {
+//        return TableSegmentController()
+//    }
     
 
 }

@@ -12,7 +12,7 @@ open class PAViewController : UIViewController {
     
     private let lifecycleRegistery = PALifecycleRegistry()
     
-    func getLifecycleOwner() -> PALifecycle {
+    public func getLifecycleOwner() -> PALifecycle {
         return self.lifecycleRegistery.lifecycle
     }
     

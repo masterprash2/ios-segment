@@ -107,11 +107,11 @@ public class PATableDelegate : NSObject, UITableViewDataSource, UITableViewDeleg
         }
     }
     
-    internal func itemAtIndexPath(_ indexPath: IndexPath) -> PAItemController {
+    public func itemAtIndexPath(_ indexPath: IndexPath) -> PAItemController {
         return self.sections.itemAtIndexPath(indexPath)
     }
     
-    internal func sectionAtIndex(_ index : Int) -> PAItemController {
+    public func sectionAtIndex(_ index : Int) -> PAItemController {
         return sections.sectionItemAtIndex(index)
     }
     

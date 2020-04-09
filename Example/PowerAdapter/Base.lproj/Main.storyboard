@@ -15,13 +15,13 @@
                         <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS" customClass="TableSegmentView" customModule="PowerAdapter_Example" customModuleProvider="target">
+                    <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS" customClass="PASegmentViewContainer" customModule="PowerAdapter">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                     <connections>
-                        <outlet property="segmentView" destination="kh9-bI-dsS" id="Sxe-tt-8KA"/>
+                        <outlet property="segmentContainer" destination="kh9-bI-dsS" id="g7t-ZN-uIl"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>

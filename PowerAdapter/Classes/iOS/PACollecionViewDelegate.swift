@@ -115,7 +115,6 @@ open class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UIColl
     open func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         let tableCell = cell as! PACollectionViewCell
         tableCell.willDisplay()
-        
     }
     
     open func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -123,11 +122,11 @@ open class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UIColl
         tableCell.willEndDisplay()
     }
     
-    internal func itemAtIndexPath(_ indexPath: IndexPath) -> PAItemController {
+    public func itemAtIndexPath(_ indexPath: IndexPath) -> PAItemController {
         return self.sections.itemAtIndexPath(indexPath)
     }
     
-    internal func sectionAtIndex(_ index : Int) -> PAItemController {
+    public func sectionAtIndex(_ index : Int) -> PAItemController {
         return sections.sectionItemAtIndex(index)
     }
     

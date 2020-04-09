@@ -7,11 +7,16 @@
 
 import Foundation
 import RxSwift
+import RxCocoa
 
 open class PASegmentView : UIView {
     
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
+    }
+    
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
     }
     
     
