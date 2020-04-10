@@ -22,7 +22,7 @@ class TableSegmentView : PASegmentView {
         addSubview(self.tableView)
         
         let controller = getController() as! TableSegmentController
-        tableDelegate = PACollectionPageViewDelegate(TableCellProvider(), controller.sectionSource, getLifecycleOwner())
+        tableDelegate = PACollectionPageViewDelegate(TableCellProvider(), controller.sectionSource, self)
         tableView.bounds = self.bounds
         tableView.backgroundColor = UIColor.yellow
         tableDelegate.bind(self.tableView)

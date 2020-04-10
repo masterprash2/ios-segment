@@ -8,19 +8,14 @@
 import Foundation
 import UIKit
 
-open class PAViewController : UIViewController {
+open class PAViewController : UIViewController, PAParent {
     
     private let lifecycleRegistery = PALifecycleRegistry()
-    
-    public func getLifecycleOwner() -> PALifecycle {
-        return self.lifecycleRegistery.lifecycle
-    }
     
     override open func viewDidLoad() {
         lifecycleRegistery.create()
         super.viewDidLoad()
     }
-    
     
     override open func viewWillAppear(_ animated: Bool) {
         self.lifecycleRegistery.viewWillAppear()
@@ -31,5 +26,18 @@ open class PAViewController : UIViewController {
         self.lifecycleRegistery.viewDidDisappear()
         super.viewDidDisappear(animated)
     }
+    
+    public func getLifecycle() -> PALifecycle {
+        return self.lifecycleRegistery.lifecycle
+    }
+    
+    public func getParent() -> PAParent? {
+        return nil
+    }
+    
+    public func getRootParent() -> PAParent {
+        return self
+    }
+    
 
 }

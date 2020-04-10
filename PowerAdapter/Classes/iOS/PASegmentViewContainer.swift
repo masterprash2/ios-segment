@@ -9,8 +9,9 @@ import Foundation
 import UIKit
 import RxSwift
 
-public class PASegmentViewContainer: UIView {
+public class PASegmentViewContainer: UIView, PAParent {
     
+    private weak var parent : PAParent?
     private var parentLifecycle : PALifecycle?
     
     private var segment : PASegment?
@@ -18,9 +19,10 @@ public class PASegmentViewContainer: UIView {
     private var disposable : Disposable?
     private let itemUpdatePublisher = PAItemUpdatePublisher()
     
-    public func bindParentLifecyle(_ lifecycle : PALifecycle) {
-        if(parentLifecycle == nil) {
-            self.parentLifecycle = lifecycle
+    public func bindParent(_ parent : PAParent) {
+        if(self.parent == nil) {
+            self.parent = parent
+            self.parentLifecycle = parent.getLifecycle()
         }
     }
     
@@ -32,10 +34,10 @@ public class PASegmentViewContainer: UIView {
     }
     
     private func observeLifecycle() {
-        syncCurrentState()
+
         self.disposable = self.parentLifecycle!.observeViewState()
-            .map {[unowned self] (state) -> PALifecycle.State in
-                self.updateLifecycle(state: state)
+            .map {[weak self] (state) -> PALifecycle.State in
+                self?.syncCurrentState()
                 return state
         }.subscribe()
     }
@@ -45,35 +47,30 @@ public class PASegmentViewContainer: UIView {
             switch self.parentLifecycle!.viewState {
             case .create:
                 segment.itemController.performCreate(itemUpdatePublisher)
-                segment.segmentView.bindInternal(segment.itemController)
+                segment.segmentView.bindInternal(self,segment.itemController)
+                segment.currentState = .CREATE
             case .resume:
-                segment.itemController.performCreate(itemUpdatePublisher)
-                segment.segmentView.bindInternal(segment.itemController)
-                segment.segmentView.bindInternal(segment.itemController)
+                if(segment.currentState == .FRESH) {
+                    segment.itemController.performCreate(itemUpdatePublisher)
+                    segment.segmentView.bindInternal(self,segment.itemController)
+                }
                 segment.segmentView.viewWillAppear()
+                segment.currentState = .RESUME
             case .paused:
-                segment.itemController.performCreate(itemUpdatePublisher)
-                segment.segmentView.bindInternal(segment.itemController)
-            default : return
-            }
-        }
-    }
-    
-    private func updateLifecycle(state : PALifecycle.State) {
-        if let segment = self.segment {
-            switch state {
-            case .create:
-                segment.itemController.performCreate(itemUpdatePublisher)
-            case .resume:
-                segment.segmentView.viewWillAppear()
-            case .paused:
-                segment.itemController.performCreate(itemUpdatePublisher)
-            case .destroy:
-                segment.segmentView.viewDidDisappear()
-                segment.segmentView.unBind()
+                if(segment.currentState == .FRESH) {
+                    segment.itemController.performCreate(itemUpdatePublisher)
+                    segment.segmentView.bindInternal(self,segment.itemController)
+                }
+                segment.itemController.performPause()
+            case .destroy :
+                if(segment.currentState != .FRESH) {
+                    segment.segmentView.unBind()
+                }
                 segment.itemController.performDestroy()
             default : return
             }
+            
+
         }
     }
     
@@ -89,6 +86,23 @@ public class PASegmentViewContainer: UIView {
         }
     }
     
+    public func getParent() -> PAParent? {
+        return self.parent
+    }
+    
+    public func getLifecycle() -> PALifecycle {
+        return self.parentLifecycle!
+    }
+    
+    public func getRootParent() -> PAParent {
+        if(self.parent == nil) {
+            return self
+        }
+        else {
+            return self.parent!.getRootParent()
+        }
+
+    }
     
     public func unbind() {
         

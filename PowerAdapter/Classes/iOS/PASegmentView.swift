@@ -9,7 +9,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-open class PASegmentView : UIView {
+open class PASegmentView : UIView, PAParent {
     
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -27,20 +27,19 @@ open class PASegmentView : UIView {
     private let lifecycleRegistry = PALifecycleRegistry()
     private var lifecycleObserver : Disposable?
     
+    private weak var parent : PAParent?
+    
     public func getController() -> PAController {
         return itemController.controller
     }
     
-    internal func bindInternal(_ controller : PAItemController) {
+    internal func bindInternal(_ parent : PAParent, _ controller : PAItemController) {
+        self.parent = parent
         unBindInternal()
         self.isBounded = true
         self.itemController = controller
         observeLifecycle()
         self.bind()
-    }
-    
-    public func getLifecycleOwner() -> PALifecycle {
-        return lifecycleRegistry.lifecycle
     }
     
     open func bind() {
@@ -78,6 +77,7 @@ open class PASegmentView : UIView {
             self.unBind()
         }
         self.isBounded = false
+        self.parent = nil
     }
     
     open func unBind() {
@@ -85,7 +85,21 @@ open class PASegmentView : UIView {
     }
     
     
-    func computeSize(_ parent : UIView) -> CGSize {
-        return self.bounds.size
+    public func getParent() -> PAParent? {
+        return self.parent
     }
+    
+    public func getLifecycle() -> PALifecycle {
+        return lifecycleRegistry.lifecycle
+    }
+    
+    public func getRootParent() -> PAParent {
+        if(self.parent == nil) {
+            return self
+        }
+        else {
+            return self.parent!.getRootParent()
+        }
+    }
+    
 }

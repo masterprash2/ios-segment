@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import RxSwift
 
-open class PACollectionViewCell : UICollectionViewCell {
+open class PACollectionViewCell : UICollectionViewCell, PAParent {
     
     @IBOutlet public var rootView : PASegmentView?
     
@@ -18,10 +18,13 @@ open class PACollectionViewCell : UICollectionViewCell {
     
     private var isInView = false
     
-    public func bind(_ item : PAItemController, _ parentLifecycle : PALifecycle) {
-        rootView!.bindInternal(item)
-        self.parentLifecycle = parentLifecycle
-        observeParentLifecycle(parentLifecycle)
+    private weak var parent : PAParent?
+    
+    public func bind(_ item : PAItemController, _ parent : PAParent) {
+        rootView!.bindInternal(self, item)
+        self.parent = parent
+        self.parentLifecycle = parent.getLifecycle()
+        observeParentLifecycle(parentLifecycle!)
     }
     
     private func observeParentLifecycle(_ parentLifcycle : PALifecycle) {
@@ -66,5 +69,21 @@ open class PACollectionViewCell : UICollectionViewCell {
         self.rootView!.viewDidDisappear()
     }
     
+    public func getLifecycle() -> PALifecycle {
+        return parentLifecycle!
+    }
+    
+    public func getParent() -> PAParent? {
+        return self.parent
+    }
+    
+    public func getRootParent() -> PAParent {
+        if(self.parent == nil) {
+            return self
+        }
+        else {
+            return self.parent!.getRootParent()
+        }
+    }
     
 }

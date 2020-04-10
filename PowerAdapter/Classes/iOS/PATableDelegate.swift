@@ -17,12 +17,13 @@ public class PATableDelegate : NSObject, UITableViewDataSource, UITableViewDeleg
     weak var tableView : UITableView?
     private var currentPage : IndexPath = IndexPath.init(row: 0, section: 0)
     public var pageChangeDelegate : PATableViewPageDelegate?
+    private weak var parent : PAParent?
     
-    
-    public init(_ cellProvider : PATableCellProvider,_ sections : PASectionDatasource, _ parentLifecycle : PALifecycle, _ isPagingEnabled : Bool) {
+    public init(_ cellProvider : PATableCellProvider,_ sections : PASectionDatasource, _ parent : PAParent, _ isPagingEnabled : Bool) {
         self.cellProvider = cellProvider
         self.sections = sections
-        self.parentLifecycle = parentLifecycle
+        self.parent = parent
+        self.parentLifecycle = parent.getLifecycle()
         self.isPagingEnabled = isPagingEnabled
     }
     
@@ -88,7 +89,7 @@ public class PATableDelegate : NSObject, UITableViewDataSource, UITableViewDeleg
         let item = itemAtIndexPath(indexPath)
         let cell = self.cellProvider.cellForController(tableView, item.controller,indexPath)
         let paTableCell = (cell as! PATableViewCell)
-        paTableCell.bind(item,parentLifecycle)
+        paTableCell.bind(item,parent!)
         return cell
     }
     

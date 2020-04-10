@@ -16,13 +16,15 @@ open class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UIColl
     private let sections : PASectionDatasource
     private let disposeBag = DisposeBag()
     private let parentLifecycle : PALifecycle
+    private weak var parent : PAParent?
     weak var collectionView : UICollectionView?
     private var updates = [(Int, PASourceUpdateEventModel)]()
     
-    public init(_ cellProvider : PACollectionViewCellProvider,_ sections : PASectionDatasource, _ parentLifecycle : PALifecycle) {
+    public init(_ cellProvider : PACollectionViewCellProvider,_ sections : PASectionDatasource, _ parent : PAParent) {
         self.cellProvider = cellProvider
         self.sections = sections
-        self.parentLifecycle = parentLifecycle
+        self.parentLifecycle = parent.getLifecycle()
+        self.parent = parent
     }
     
     public func bind(_ collectionView : UICollectionView) {
@@ -108,7 +110,7 @@ open class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UIColl
         let item = itemAtIndexPath(indexPath)
         let cell = self.cellProvider.cellForController(collectionView, item.controller, indexPath)
         let paTableCell = (cell as! PACollectionViewCell)
-        paTableCell.bind(item,parentLifecycle)
+        paTableCell.bind(item,self.parent!)
         return cell
     }
     

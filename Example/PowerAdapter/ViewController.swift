@@ -19,7 +19,7 @@ class ViewController: PAViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        segmentContainer.bindParentLifecyle(getLifecycleOwner())
+        segmentContainer.bindParent(self)
         let view = TableSegmentView(frame: CGRect(x: 0, y: 0, width: self.segmentContainer.frame.size.width, height: self.segmentContainer.frame.size.height))
         segmentContainer.setSegment(PASegment(view,TableSegmentController()))
         

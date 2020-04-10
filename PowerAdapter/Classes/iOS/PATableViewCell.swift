@@ -8,7 +8,7 @@
 import Foundation
 import RxSwift
 
-open class PATableViewCell : UITableViewCell {
+open class PATableViewCell : UITableViewCell, PAParent {
     
     @IBOutlet public var rootView : PASegmentView?
     
@@ -17,14 +17,13 @@ open class PATableViewCell : UITableViewCell {
     
     private var isInView = false
     
-    open func computeSize(_ parent : UIView) -> CGSize {
-        return self.rootView!.computeSize(parent)
-    }
+    private weak var parent : PAParent?
     
-    internal func bind(_ item : PAItemController, _ parentLifecycle : PALifecycle) {
-        rootView!.bindInternal(item)
-        self.parentLifecycle = parentLifecycle
-        observeParentLifecycle(parentLifecycle)
+    
+    internal func bind(_ item : PAItemController, _ parent : PAParent) {
+        rootView!.bindInternal(self, item)
+        self.parentLifecycle = parent.getLifecycle()
+        observeParentLifecycle(parentLifecycle!)
     }
     
     private func observeParentLifecycle(_ parentLifcycle : PALifecycle) {
@@ -67,5 +66,22 @@ open class PATableViewCell : UITableViewCell {
     
     private func viewDidDisappear() {
         self.rootView!.viewDidDisappear()
+    }
+    
+    public func getParent() -> PAParent? {
+        return self.parent
+    }
+    
+    public func getLifecycle() -> PALifecycle {
+        return parentLifecycle!
+    }
+    
+    public func getRootParent() -> PAParent {
+        if(self.parent == nil) {
+            return self
+        }
+        else {
+            return self.parent!.getRootParent()
+        }
     }
 }
