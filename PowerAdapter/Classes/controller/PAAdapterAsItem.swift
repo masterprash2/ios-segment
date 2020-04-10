@@ -19,14 +19,12 @@ class PAAdapterAsItem {
          parent : PAProxySource) {
         self.adapter = adapter
         self.parent = parent
-        DispatchQueue.main.async {
-            self.subscribeUpdates()
-        }
+        self.subscribeUpdates()
     }
     
     private func subscribeUpdates() {
-        updateObserver = adapter.observeAdapterUpdates().map({[unowned self] (event) -> Bool in
-            self.transformUpdateEvent(event)
+        updateObserver = adapter.observeAdapterUpdates().map({[weak self] (event) -> Bool in
+            self?.transformUpdateEvent(event)
             return true
         }).subscribe()
     }
