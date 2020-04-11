@@ -34,8 +34,8 @@ open class PASegmentView : UIView, PAParent {
     }
     
     internal func bindInternal(_ parent : PAParent, _ controller : PAItemController) {
-        self.parent = parent
         unBindInternal()
+        self.parent = parent
         self.isBounded = true
         self.itemController = controller
         observeLifecycle()
