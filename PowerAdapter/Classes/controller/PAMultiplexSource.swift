@@ -14,7 +14,7 @@ import RxSwift
  */
 public class PAMultiplexSource : PAProxySource {
     
-    private var adapters = [PAAdapterAsItem]()
+    private var sources = [PAAdapterAsItem]()
     private var isAttached = false
     
     public override init() {
@@ -24,14 +24,14 @@ public class PAMultiplexSource : PAProxySource {
     
     override func onAttached() {
         isAttached = true
-        for item in adapters {
+        for item in sources {
             item.adapter.onAttached()
         }
     }
 
     override public var viewInteractor: ViewInteractor? {
         didSet {
-            adapters.forEach({ (it) in
+            sources.forEach({ (it) in
                 it.adapter.viewInteractor = viewInteractor
             })
         }
@@ -44,25 +44,29 @@ public class PAMultiplexSource : PAProxySource {
     }
 
 
-    public func addSource(adapter: PAItemControllerSource) {
-        insertSource(adapters.count, adapter)
+    public func addSource(source: PAItemControllerSource) {
+        insertSource(sources.count, source)
+    }
+    
+    public func sourceAtIndex(_ index : Int) -> PAItemControllerSource {
+        return sources[index].adapter
     }
 
-    public func insertSource(_ index: Int, _  adapter: PAItemControllerSource) {
-        let item = PAAdapterAsItem(adapter: adapter,parent: self)
-        adapter.viewInteractor = viewInteractor
+    public func insertSource(_ index: Int, _  source: PAItemControllerSource) {
+        let item = PAAdapterAsItem(adapter: source ,parent: self)
+        source.viewInteractor = viewInteractor
         processWhenSafe{ self.addSourceImmediate(index, item) }
     }
 
     private func addSourceImmediate(_ index: Int,_ item: PAAdapterAsItem) {
-        if (adapters.count > index) {
-            let previousItem = adapters[index]
+        if (sources.count > index) {
+            let previousItem = sources[index]
             item.startPosition = previousItem.startPosition
-        } else if (adapters.count > 0) {
-            let lastItem = adapters[adapters.count - 1]
+        } else if (sources.count > 0) {
+            let lastItem = sources[sources.count - 1]
             item.startPosition = lastItem.startPosition + lastItem.adapter.itemCount
         }
-        adapters.insert(item,at: index)
+        sources.insert(item,at: index)
         updateIndexes(item)
         if (isAttached) {
             item.adapter.onAttached()
@@ -73,8 +77,8 @@ public class PAMultiplexSource : PAProxySource {
     }
 
     override func computeItemCount() -> Int {
-        if (adapters.count > 0) {
-            let item = adapters[adapters.count - 1]
+        if (sources.count > 0) {
+            let item = sources[sources.count - 1]
             return item.startPosition + item.adapter.itemCount
         }
         return 0
@@ -86,7 +90,7 @@ public class PAMultiplexSource : PAProxySource {
     }
     
     public func numberOfSources() -> Int {
-        return self.adapters.count
+        return self.sources.count
     }
 
     //    @Override
@@ -95,7 +99,7 @@ public class PAMultiplexSource : PAProxySource {
 //        adapterAsItem.adapter.onItemDetached(position - adapterAsItem.startPosition);
 //    }
     override func onDetached() {
-        for item in adapters {
+        for item in sources {
             item.adapter.onDetached()
         }
         isAttached = false
@@ -103,7 +107,7 @@ public class PAMultiplexSource : PAProxySource {
 
     private func decodeAdapterItem(_ position: Int) -> PAAdapterAsItem {
         var previous: PAAdapterAsItem!
-        for adapterAsItem in adapters {
+        for adapterAsItem in sources {
             if (adapterAsItem.startPosition > position) {
                 return previous
             } else {
@@ -116,7 +120,7 @@ public class PAMultiplexSource : PAProxySource {
     override func getItemPosition(_ item: PAItemController) -> Int {
         let top = 0
         var itemPosition = -1
-        for adapterAsItem in adapters {
+        for adapterAsItem in sources {
             let foundPosition = adapterAsItem.adapter.getItemPosition(item)
             if (foundPosition >= 0) {
                 itemPosition = top + foundPosition
@@ -131,13 +135,13 @@ public class PAMultiplexSource : PAProxySource {
     }
 
     private func removeAdapterImmediate(_ removeAdapterAtPosition: Int) {
-        let remove: PAAdapterAsItem = adapters.remove(at: removeAdapterAtPosition)
+        let remove: PAAdapterAsItem = sources.remove(at: removeAdapterAtPosition)
         let removePositionStart = remove.startPosition
-        var nextAdapterStartPosition = removePositionStart
-        for index in removeAdapterAtPosition..<adapters.count {
-            let adapterAsItem = adapters[index]
-            adapterAsItem.startPosition = nextAdapterStartPosition
-            nextAdapterStartPosition = adapterAsItem.startPosition + adapterAsItem.adapter.itemCount
+        var nextsourcestartPosition = removePositionStart
+        for index in removeAdapterAtPosition..<sources.count {
+            let adapterAsItem = sources[index]
+            adapterAsItem.startPosition = nextsourcestartPosition
+            nextsourcestartPosition = adapterAsItem.startPosition + adapterAsItem.adapter.itemCount
         }
         beginUpdates()
         notifyItemsRemoved(removePositionStart, remove.adapter.itemCount)
@@ -148,7 +152,7 @@ public class PAMultiplexSource : PAProxySource {
     override func updateIndexes(_ modifiedItem: PAAdapterAsItem) {
         var modifiedItem = modifiedItem
         var continueUpdating = false
-        for item in adapters {
+        for item in sources {
             if (continueUpdating) {
                 item.startPosition = modifiedItem.startPosition + modifiedItem.adapter.itemCount
                 modifiedItem = item

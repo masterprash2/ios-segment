@@ -57,10 +57,10 @@ class TableSegmentController: PAController {
     
     private func createMultiPlexSource() -> PAItemControllerSource {
         let source = PAMultiplexSource()
-        source.addSource(adapter: createDataSource())
-        source.addSource(adapter: createDataSource())
-        source.addSource(adapter: createDataSource())
-        source.addSource(adapter: createDataSource())
+        source.addSource(source: createDataSource())
+        source.addSource(source: createDataSource())
+        source.addSource(source: createDataSource())
+        source.addSource(source: createDataSource())
         return source
     }
     
