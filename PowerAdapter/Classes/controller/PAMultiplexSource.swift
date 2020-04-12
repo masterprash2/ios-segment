@@ -84,6 +84,10 @@ public class PAMultiplexSource : PAProxySource {
         let item = decodeAdapterItem(position)
         return item.adapter.getItem(position - item.startPosition)
     }
+    
+    public func numberOfSources() -> Int {
+        return self.adapters.count
+    }
 
     //    @Override
 //    public void onItemDetached(int position) {
