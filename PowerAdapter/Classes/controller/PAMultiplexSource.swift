@@ -51,6 +51,14 @@ public class PAMultiplexSource : PAProxySource {
     public func sourceAtIndex(_ index : Int) -> PAItemControllerSource {
         return sources[index].adapter
     }
+    
+    public func removeAllSources() {
+        processWhenSafe {
+            while(self.sources.count > 0) {
+                self.removeSourceImmediate(self.sources.count-1)
+            }
+        }
+    }
 
     public func insertSource(_ index: Int, _  source: PAItemControllerSource) {
         let item = PAAdapterAsItem(adapter: source ,parent: self)
@@ -130,15 +138,15 @@ public class PAMultiplexSource : PAProxySource {
         return itemPosition
     }
 
-    public func removeAdapter(_ removeAdapterAtPosition: Int) {
-        processWhenSafe{ self.removeAdapterImmediate(removeAdapterAtPosition) }
+    public func removeSource(_ removeSourceAtPosition: Int) {
+        processWhenSafe{ self.removeSourceImmediate(removeSourceAtPosition) }
     }
 
-    private func removeAdapterImmediate(_ removeAdapterAtPosition: Int) {
-        let remove: PAAdapterAsItem = sources.remove(at: removeAdapterAtPosition)
+    private func removeSourceImmediate(_ removeSourceAtPosition: Int) {
+        let remove: PAAdapterAsItem = sources.remove(at: removeSourceAtPosition)
         let removePositionStart = remove.startPosition
         var nextsourcestartPosition = removePositionStart
-        for index in removeAdapterAtPosition..<sources.count {
+        for index in removeSourceAtPosition..<sources.count {
             let adapterAsItem = sources[index]
             adapterAsItem.startPosition = nextsourcestartPosition
             nextsourcestartPosition = adapterAsItem.startPosition + adapterAsItem.adapter.itemCount
