@@ -42,7 +42,7 @@ public protocol ViewInteractor {
         return updateEventPublisher
     }
 
-    func getItemId(position: Int) -> Int {
+    func getItemId(position: Int) -> String {
         return getItem(position).id()
     }
 

@@ -10,11 +10,11 @@ import Foundation
 
 public class PADefaultItemController: PAController {
     
-    private let id : Int
+    private let id : String
     private let type : Int
     
     public init(_ id : Int, _ type : Int) {
-        self.id = id
+        self.id = id.description
         self.type = type
     }
     
@@ -22,7 +22,7 @@ public class PADefaultItemController: PAController {
         return type
     }
     
-    public func getId() -> Int {
+    public func getId() -> String {
         self.id
     }
     

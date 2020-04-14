@@ -26,9 +26,9 @@ public class PAItemController : DiffAware, Hashable {
     }
 
     
-    public typealias DiffId = Int
+    public typealias DiffId = String
      
-    public var diffId: Int
+    public var diffId: String
     let controller : PAController
     private weak var itemUpdatePublisher : PAItemUpdatePublisher?
     
@@ -59,7 +59,7 @@ public class PAItemController : DiffAware, Hashable {
         return controller.getType()
     }
     
-    func id() ->  Int {
+    func id() ->  String {
         return controller.getId()
     }
     

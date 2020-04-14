@@ -10,7 +10,7 @@ import Foundation
 public protocol PAController {
     
     func getType() -> Int
-    func getId() -> Int
+    func getId() -> String
     
     func onCreate(_ itemUpdatePublisher : PAItemUpdatePublisher)
     func onViewWillAppear()
