@@ -21,6 +21,7 @@ open class PATableViewCell : UITableViewCell, PAParent {
     
     
     internal func bind(_ item : PAItemController, _ parent : PAParent) {
+        self.parent = parent
         rootView!.bindInternal(self, item)
         self.parentLifecycle = parent.getLifecycle()
         observeParentLifecycle(parentLifecycle!)

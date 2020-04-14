@@ -21,6 +21,7 @@ open class PACollectionViewCell : UICollectionViewCell, PAParent {
     private weak var parent : PAParent?
     
     public func bind(_ item : PAItemController, _ parent : PAParent) {
+        self.parent = parent
         rootView!.bindInternal(self, item)
         self.parent = parent
         self.parentLifecycle = parent.getLifecycle()
