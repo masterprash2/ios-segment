@@ -29,7 +29,7 @@ public class PAItemController : DiffAware, Hashable {
     public typealias DiffId = String
      
     public var diffId: String
-    let controller : PAController
+    public let controller : PAController
     private weak var itemUpdatePublisher : PAItemUpdatePublisher?
     
     private var state = State.FRESH {

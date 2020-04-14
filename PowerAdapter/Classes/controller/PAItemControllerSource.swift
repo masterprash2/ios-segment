@@ -19,7 +19,7 @@ public protocol ViewInteractor {
 @objcMembers open class PAItemControllerSource : NSObject {
     
     private let updateEventPublisher = PublishSubject<PASourceUpdateEventModel>()
-    private (set) var itemCount = 0
+    public private(set) var itemCount = 0
     private var maxCount = -1
     private var hasMaxLimit = false
 
@@ -50,7 +50,7 @@ public protocol ViewInteractor {
         return getItem(position).type()
     }
 
-    func setMaxLimit(limit: Int) {
+    public func setMaxLimit(limit: Int) {
         var newLimit = limit
         if(limit < 0) {
             newLimit = 0
@@ -84,6 +84,10 @@ public protocol ViewInteractor {
         return 0
     }
     
+    public func getItem(index: Int) -> PAController {
+        return getItem(index).controller
+    }
+    
     func getItem(_ position: Int) -> PAItemController {
         if (lastItemIndex == position) {
             return lastItem!
@@ -95,7 +99,7 @@ public protocol ViewInteractor {
         }
     }
 
-    func getItemForPosition(_ position: Int) -> PAItemController {
+   func getItemForPosition(_ position: Int) -> PAItemController {
         return nil!
     }
     //    public abstract void onItemDetached(int position);
