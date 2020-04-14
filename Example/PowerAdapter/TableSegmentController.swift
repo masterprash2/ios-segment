@@ -17,8 +17,8 @@ class TableSegmentController: PAController {
         return 1
     }
     
-    func getId() -> Int {
-        return 1
+    func getId() -> String {
+        return "1"
     }
     
     func onCreate(_ itemUpdatePublisher: PAItemUpdatePublisher) {

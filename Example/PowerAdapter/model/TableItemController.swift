@@ -19,12 +19,12 @@ class TableItemController: PAController {
     
     private (set) var type: TableItemType
     
-    private (set) var id: Int
+    private (set) var id: String
     
     
     
     init(id : Int, type : TableItemType) {
-        self.id = id
+        self.id = id.description
         self.type = type
     }
     
@@ -32,7 +32,7 @@ class TableItemController: PAController {
         return type.rawValue
     }
     
-    func getId() -> Int {
+    func getId() -> String {
         return id
     }
     
