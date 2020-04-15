@@ -2,7 +2,7 @@ import Foundation
 import RxSwift
 import UIKit
 
-public protocol PATableViewPageDelegate {
+public protocol PATableViewPageDelegate : AnyObject {
     func onPageChanged(_ tableView : UITableView, pagePath: IndexPath)
 }
 
@@ -16,7 +16,7 @@ public class PATableDelegate : NSObject, UITableViewDataSource, UITableViewDeleg
     private let isPagingEnabled : Bool
     weak var tableView : UITableView?
     private var currentPage : IndexPath = IndexPath.init(row: 0, section: 0)
-    public var pageChangeDelegate : PATableViewPageDelegate?
+    public weak var pageChangeDelegate : PATableViewPageDelegate?
     private weak var parent : PAParent?
     
     public init(_ cellProvider : PATableCellProvider,_ sections : PASectionDatasource, _ parent : PAParent, _ isPagingEnabled : Bool) {
