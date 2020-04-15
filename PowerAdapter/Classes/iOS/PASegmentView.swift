@@ -25,7 +25,7 @@ open class PASegmentView : UIView, PAParent {
     private var isBounded = false
     
     private let lifecycleRegistry = PALifecycleRegistry()
-    private var lifecycleObserver : Disposable?
+    private var disposeBag = DisposeBag()
     
     private weak var parent : PAParent?
     
@@ -35,6 +35,7 @@ open class PASegmentView : UIView, PAParent {
     
     internal func bindInternal(_ parent : PAParent, _ controller : PAItemController) {
         unBindInternal()
+        self.disposeBag = DisposeBag()
         self.parent = parent
         self.isBounded = true
         self.itemController = controller
@@ -47,10 +48,10 @@ open class PASegmentView : UIView, PAParent {
     }
     
     private func observeLifecycle() {
-        lifecycleObserver = itemController.observeLifecycle().map {[weak self] (state) -> PAItemController.State in
+        itemController.observeLifecycle().map {[weak self] (state) -> PAItemController.State in
             self?.updateLifecycle(state: state)
             return state
-        }.subscribe()
+            }.subscribe().disposed(by: disposeBag)
     }
     
     private func updateLifecycle(state : PAItemController.State) {
@@ -72,7 +73,6 @@ open class PASegmentView : UIView, PAParent {
     }
     
     func unBindInternal() {
-        lifecycleObserver?.dispose()
         if(isBounded) {
             self.unBind()
         }

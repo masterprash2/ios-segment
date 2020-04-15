@@ -15,8 +15,7 @@ public class PASegmentViewContainer: UIView, PAParent {
     private var parentLifecycle : PALifecycle?
     
     private var segment : PASegment?
-    private let disposeBag = DisposeBag()
-    private var disposable : Disposable?
+    private var disposeBag = DisposeBag()
     private let itemUpdatePublisher = PAItemUpdatePublisher()
     
     public func bindParent(_ parent : PAParent) {
@@ -34,12 +33,11 @@ public class PASegmentViewContainer: UIView, PAParent {
     }
     
     private func observeLifecycle() {
-
-        self.disposable = self.parentLifecycle!.observeViewState()
+        self.parentLifecycle!.observeViewState()
             .map {[weak self] (state) -> PALifecycle.State in
                 self?.syncCurrentState()
                 return state
-        }.subscribe()
+            }.subscribe().disposed(by: disposeBag)
     }
     
     private func syncCurrentState() {
@@ -76,8 +74,7 @@ public class PASegmentViewContainer: UIView, PAParent {
     
     public func removeSegment() {
         if let segment = self.segment {
-            disposable?.dispose()
-            disposable = nil
+            self.disposeBag = DisposeBag()
             segment.segmentView.viewDidDisappear()
             segment.segmentView.removeFromSuperview()
             segment.segmentView.unBind()

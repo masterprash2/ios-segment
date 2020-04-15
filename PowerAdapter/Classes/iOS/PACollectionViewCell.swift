@@ -13,7 +13,7 @@ open class PACollectionViewCell : UICollectionViewCell, PAParent {
     
     @IBOutlet public var rootView : PASegmentView?
     
-    private var lifecycleObserver : Disposable?
+    private var disposeBag = DisposeBag()
     private weak var parentLifecycle : PALifecycle?
     
     private var isInView = false
@@ -29,12 +29,12 @@ open class PACollectionViewCell : UICollectionViewCell, PAParent {
     }
     
     private func observeParentLifecycle(_ parentLifcycle : PALifecycle) {
-        lifecycleObserver?.dispose()
-        lifecycleObserver = parentLifecycle?.observeViewState()
+        disposeBag = DisposeBag()
+        parentLifecycle?.observeViewState()
             .map({[weak self] (value) -> PALifecycle.State in
                 self?.lifecycleUpdates(value)
                 return value
-            }).subscribe()
+            }).subscribe().disposed(by: disposeBag)
     }
     
     

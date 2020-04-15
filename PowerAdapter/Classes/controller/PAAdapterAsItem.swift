@@ -12,7 +12,7 @@ class PAAdapterAsItem {
     
     let adapter: PAItemControllerSource
     var startPosition = 0
-    var updateObserver: Disposable!
+    private var disposeBag = DisposeBag()
     weak var parent : PAProxySource?
     
     init(adapter: PAItemControllerSource,
@@ -23,10 +23,10 @@ class PAAdapterAsItem {
     }
     
     private func subscribeUpdates() {
-        updateObserver = adapter.observeAdapterUpdates().map({[weak self] (event) -> Bool in
+        adapter.observeAdapterUpdates().map({[weak self] (event) -> Bool in
             self?.transformUpdateEvent(event)
             return true
-        }).subscribe()
+        }).subscribe().disposed(by: disposeBag)
     }
     
     func transformUpdateEvent(_ event: PASourceUpdateEventModel) {
