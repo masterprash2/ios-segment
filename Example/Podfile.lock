@@ -11,11 +11,11 @@ PODS:
   - Nimble-Snapshots/Core (6.3.0):
     - FBSnapshotTestCase (~> 2.0)
     - Nimble (~> 7.0)
-  - PowerAdapter (0.1.0):
+  - PowerAdapter (0.1.8):
     - DeepDiff
-    - RxCocoa (= 5.0.1)
-    - RxSwift (= 5.0.1)
-    - RxSwiftExt (= 5.2.0)
+    - RxCocoa (~> 5)
+    - RxSwift (~> 5)
+    - RxSwiftExt (~> 5)
   - Quick (1.2.0)
   - RxCocoa (5.0.1):
     - RxRelay (~> 5)
@@ -63,7 +63,7 @@ SPEC CHECKSUMS:
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
   Nimble: 051e3d8912d40138fa5591c78594f95fb172af37
   Nimble-Snapshots: f5459b5b091678dc942d03ec4741cacb58ba4a52
-  PowerAdapter: 1d4bdb4baf2861979e58a08053c844a68a6b24f9
+  PowerAdapter: 433d4c684402891fc4437f29c416323459dcfb54
   Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
   RxCocoa: e741b9749968e8a143e2b787f1dfbff2b63d0a5c
   RxRelay: 89d54507f4fd4d969e6ec1d4bd7f3673640b4640
@@ -72,4 +72,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 1239a2f2dca6a2e601026ac19f3eaaaa8b9a4591
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.1
