@@ -20,8 +20,10 @@ public class PAItemController : DiffAware, Hashable {
      public enum State {
         case FRESH
         case CREATE
+        case VIEW_DID_LOAD
         case RESUME
         case PAUSE
+        case VIEW_DID_UNLOAD
         case DESTROY
     }
 
@@ -77,12 +79,22 @@ public class PAItemController : DiffAware, Hashable {
             default: return
         }
     }
+    func performViewDidLoad() {
+        performCreate(self.itemUpdatePublisher!)
+        switch state {
+        case .CREATE,.VIEW_DID_UNLOAD:
+            self.state = .VIEW_DID_LOAD
+            self.controller.onViewDidLoad()
+        default: return
+        }
+    }
     
     
     func performResume() {
-        performCreate(self.itemUpdatePublisher!)
+        performViewDidLoad()
         switch (state) {
-            case .PAUSE,.CREATE : do {
+            case .VIEW_DID_LOAD : do {
+                performViewDidLoad()
                 self.state = .RESUME
                 self.controller.onViewWillAppear()
             }
@@ -100,21 +112,32 @@ public class PAItemController : DiffAware, Hashable {
             default: return
         }
     }
+    
+    func performViewDidUnLoad() {
+        performPause()
+        switch state {
+        case .VIEW_DID_LOAD,.PAUSE:
+            self.state = .VIEW_DID_UNLOAD
+            self.controller.onViewDidUnload()
+        default: return
+        }
+    }
+    
 
 
     func performDestroy() {
+        performViewDidUnLoad()
         switch (state) {
-            case .RESUME : do {
-                performPause()
-                self.state = .DESTROY
-                self.controller.onDestroy()
-            }
-            case .CREATE, .PAUSE : do {
+            case .CREATE, .VIEW_DID_UNLOAD : do {
                 self.state = .DESTROY
                 self.controller.onDestroy()
             }
             default: return
         }
-           
+    }
+    
+    
+    deinit {
+        performDestroy()
     }
 }

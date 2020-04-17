@@ -7,41 +7,48 @@
 
 import Foundation
 
-class PAEmtpyItemController: PAController {
+public class PAEmtpyItemController: PAController {
     
     
-    func getType() -> Int {
+    public func getType() -> Int {
         1
     }
     
-    func getId() -> String {
+    public func getId() -> String {
         return "1"
     }
     
-    func onCreate(_ itemUpdatePublisher: PAItemUpdatePublisher) {
+    public func onCreate(_ itemUpdatePublisher: PAItemUpdatePublisher) {
            
     }
-    
-    func onViewWillAppear() {
+    public func onViewDidUnload() {
         
     }
     
-    func onViewDidDisapper() {
+    public func onViewDidLoad() {
         
     }
     
-    func onDestroy() {
+    public func onViewWillAppear() {
+        
+    }
+    
+    public func onViewDidDisapper() {
+        
+    }
+    
+    public func onDestroy() {
         
     }
     
     
-    func isContentEqual(_ rhs: PAController) -> Bool {
+    public func isContentEqual(_ rhs: PAController) -> Bool {
         return true
     }
     
     
    
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         
     }
     

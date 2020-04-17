@@ -11,6 +11,8 @@ import PowerAdapter
 
 class TableSegmentController: PAController {
     
+    
+    
     let sectionSource = PASectionDatasource()
     
     func getType() -> Int {
@@ -25,15 +27,24 @@ class TableSegmentController: PAController {
         
     }
     
-    func onViewWillAppear() {
+    func onViewDidLoad() {
+        NSLog("Controller - Load")
         DispatchQueue.global(qos: .background).async {
             self.sectionSource.addSection(item: TableItemController(id: 11111, type: .section), source: self.createDataSource())
             self.sectionSource.addSection(item: TableItemController(id: 11112, type: .section), source: self.createMultiPlexSource())
         }
     }
     
+    func onViewWillAppear() {
+        NSLog("Controller - WillAppear")
+    }
+    
     func onViewDidDisapper() {
-        
+        NSLog("Controller - Disappear")
+    }
+    
+    func onViewDidUnload() {
+        NSLog("Controller - Unload")
     }
     
     func onDestroy() {

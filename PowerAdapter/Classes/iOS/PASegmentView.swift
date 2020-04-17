@@ -41,6 +41,7 @@ open class PASegmentView : UIView, PAParent {
         self.itemController = controller
         observeLifecycle()
         self.bind()
+        self.itemController.performViewDidLoad()
     }
     
     open func bind() {
@@ -75,6 +76,7 @@ open class PASegmentView : UIView, PAParent {
     func unBindInternal() {
         if(isBounded) {
             self.unBind()
+            self.itemController.performViewDidUnLoad()
         }
         self.isBounded = false
         self.parent = nil

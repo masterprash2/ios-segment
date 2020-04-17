@@ -13,8 +13,10 @@ public protocol PAController {
     func getId() -> String
     
     func onCreate(_ itemUpdatePublisher : PAItemUpdatePublisher)
+    func onViewDidLoad()
     func onViewWillAppear()
     func onViewDidDisapper()
+    func onViewDidUnload()
     func onDestroy()
     
     func isContentEqual(_ rhs : PAController) -> Bool

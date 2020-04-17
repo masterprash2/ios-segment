@@ -20,6 +20,7 @@ open class PASegmentViewController : PAViewController {
             controller = PAItemController(createController())
             observeLifecyle()
             self.segmentView!.bindInternal(self, self.controller)
+            controller.performViewDidLoad()
         }
         return super.viewDidLoad()
     }

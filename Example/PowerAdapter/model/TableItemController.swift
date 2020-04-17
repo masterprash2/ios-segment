@@ -40,6 +40,12 @@ class TableItemController: PAController {
         NSLog("OnCreate - %d",getId())
     }
     
+    
+    
+    func onViewDidLoad() {
+        NSLog("OnloadView - %d",getId())
+    }
+    
     func onViewWillAppear() {
         NSLog("OnResume - %d",getId())
     }
@@ -50,6 +56,10 @@ class TableItemController: PAController {
     
     func onDestroy() {
         NSLog("OnDestroy - %d",getId())
+    }
+    
+    func onViewDidUnload() {
+        NSLog("OnUnloadView - %d",getId())
     }
     
     func isContentEqual(_ rhs: PAController) -> Bool {

@@ -30,6 +30,11 @@ public class PADefaultItemController: PAController {
         
     }
     
+    public func onViewDidLoad() {
+        
+    }
+    
+    
     public func onViewWillAppear() {
         
     }
@@ -37,6 +42,11 @@ public class PADefaultItemController: PAController {
     public func onViewDidDisapper() {
         
     }
+    
+    public func onViewDidUnload() {
+        
+    }
+    
     
     public func onDestroy() {
         
