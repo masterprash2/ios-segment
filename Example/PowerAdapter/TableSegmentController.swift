@@ -12,6 +12,7 @@ import PowerAdapter
 class TableSegmentController: PAController {
     
     
+    var pageSource : PAItemControllerSource!
     
     let sectionSource = PASectionDatasource()
     
@@ -24,11 +25,14 @@ class TableSegmentController: PAController {
     }
     
     func onCreate(_ itemUpdatePublisher: PAItemUpdatePublisher) {
-        
+        let arraySource = PAArraySource()
+        arraySource.setItems(self.createItems())
+        pageSource = arraySource
     }
     
     func onViewDidLoad() {
         NSLog("Controller - Load")
+        
         DispatchQueue.global(qos: .background).async {
             self.sectionSource.addSection(item: TableItemController(id: 11111, type: .section), source: self.createDataSource())
             self.sectionSource.addSection(item: TableItemController(id: 11112, type: .section), source: self.createMultiPlexSource())

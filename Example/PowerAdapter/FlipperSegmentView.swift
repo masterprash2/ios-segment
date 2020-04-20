@@ -9,28 +9,34 @@
 import Foundation
 import PowerAdapter
 
-class FlipperSegmentView : PASegmentView , PAFlipperDataSource  {
-    @IBOutlet var tableView : PAFlipView!
+class FlipperSegmentView : PASegmentView   {
     
+    @IBOutlet var tableView : PAFlipperView!
     
-    private var tableDelegate : PATableDelegate!
+    private var flipperDelegate : PAFlipperViewPageSourceAndDelegate!
+    
+//    private var tableDelegate : PATableDelegate!
     
     override func bind() {
-        self.tableView = PAFlipView(frame: self.bounds)
+        self.tableView = PAFlipperView(frame: self.bounds)
         addSubview(self.tableView)
         
         let controller = getController() as! TableSegmentController
         tableView.bounds = self.bounds
         tableView.backgroundColor = UIColor.yellow
-        //        tableDelegate = PATableDelegate(TableCellProvider(), controller.sectionSource, getLifecycleOwner())
-        //        // Do any additional setup after loading the view, typically from a nib.
-        //        tableView.delegate = tableDelegate
-        //        tableView.dataSource = tableDelegate
-        //        tableDelegate.bind(self.tableView)
-        tableView.setDataSource(self)
+        
+        
+        flipperDelegate = PAFlipperViewPageSourceAndDelegate(FlipperSegmentProvider(),controller.pageSource , self)
+        flipperDelegate.bind(tableView)
+        
+//                // Do any additional setup after loading the view, typically from a nib.
+//                tableView.delegate = tableDelegate
+//                tableView.dataSource = tableDelegate
+//        tableDelegate.bind(self.tableView)
+//        tableView.setDataSource(self)
     }
     
-    func numberOfPagesinFlipper(_ flipView: PAFlipView) -> Int {
+    func numberOfPagesinFlipper(_ flipView: PAFlipperView) -> Int {
         return 100
     }
     
@@ -39,7 +45,7 @@ class FlipperSegmentView : PASegmentView , PAFlipperDataSource  {
     //    }
     //
     
-    func viewForPage(_ flipper: PAFlipView, _ page: Int) -> UIView {
+    func viewForPage(_ flipper: PAFlipperView, _ page: Int) -> UIView {
         let view = UILabel()
         view.frame.size = self.bounds.size
         if(page % 2 == 0) {

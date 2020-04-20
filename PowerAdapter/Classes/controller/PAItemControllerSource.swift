@@ -27,7 +27,7 @@ public protocol ViewInteractor {
 
     private var lastItem: PAItemController?
     //    ItemControllerSource<Item,Controller> getRootAdapter(int position);
-    private (set) var lastItemIndex = 0
+    private (set) var lastItemIndex = -1
         
 
     func onAttached() {
