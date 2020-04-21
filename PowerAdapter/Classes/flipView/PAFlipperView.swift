@@ -18,7 +18,9 @@ public protocol PAFlipperViewPageDelegate : AnyObject {
     
     func flipperView(_ flipperView : PAFlipperView, didEndDisplaying page: UIView, forRowAt index: Int)
     
-    func onPageChanged(_ flipperView : PAFlipperView, page: Int)
+    func flipperView(_ flipperView : PAFlipperView, destroy page: UIView, forRowAt index: Int)
+    
+    func onPageChanged(_ flipperView : PAFlipperView, pageIndex: Int, page : UIView)
 }
 
 public class PAFlipperView : UIView {
@@ -34,6 +36,7 @@ public class PAFlipperView : UIView {
     private var pannedLastPage = 0
     
     private var currentPageIndex = 0
+    private var nextPageIndex = 0
     private var numberOfPages = 0
     private var backgroundLayer: CALayer?
     private var flipLayer: CALayer?
@@ -45,6 +48,8 @@ public class PAFlipperView : UIView {
     private var animating = false
     private var tapRecognizer: UITapGestureRecognizer?
     private var panRecognizer: UIPanGestureRecognizer?
+    
+    private var lastPageNotificationIndex = 1
     
     private let previous = Page()
     private let current = Page()
@@ -221,16 +226,44 @@ public class PAFlipperView : UIView {
         
         animating = false
         
+        
         if setNextViewOnCompletion {
+            let oldPageIndex = currentPageIndex
             currentView?.removeFromSuperview()
+            currentPageIndex = nextPageIndex
+            if(currentView != nil) {
+                delegate!.flipperView(self, didEndDisplaying: currentView!, forRowAt: (oldPageIndex - 1))
+                delegate!.flipperView(self, destroy: currentView!, forRowAt: (oldPageIndex - 1))
+            }
             currentView = nextView
+            if(currentView != nil) {
+                delegate!.flipperView(self, willDisplay: currentView!, forRowAt: (currentPageIndex - 1))
+            }
             nextView = nil
         } else {
             nextView?.removeFromSuperview()
+            if(nextView != nil) {
+                delegate!.flipperView(self, destroy: nextView!, forRowAt: (nextPageIndex - 1))
+            }
             nextView = nil
         }
-        
+        postPageChangeNotification()
         currentView?.alpha = 1
+    }
+    
+    
+    private func postPageChangeNotification() {
+        if(currentView == nil) {
+            return
+        }
+        if(lastPageNotificationIndex != currentPageIndex) {
+            lastPageNotificationIndex = currentPageIndex
+            let index = currentPageIndex
+            let view = currentView!
+            DispatchQueue.main.async {
+                self.delegate?.onPageChanged(self, pageIndex: index, page: view)
+            }
+        }
     }
     
     //#pragma selector
@@ -281,6 +314,7 @@ public class PAFlipperView : UIView {
         self.dataSource = dataSource
         numberOfPages = self.dataSource!.numberOfPagesinFlipper(self)
         currentPageIndex = 0
+        lastPageNotificationIndex = 1
         //pagecontrol current page
         perform(#selector(setFirstPage), with: nil, afterDelay: 0.001)
     }
@@ -296,8 +330,8 @@ public class PAFlipperView : UIView {
         }
         
         flipDirection = page < currentPageIndex ? .FlipDirectionBottom : .FlipDirectionTop
-        currentPageIndex = page
-        nextView = delegate!.flipperView(self, viewForPageAt: (page - 1))
+        nextPageIndex = page
+        nextView = delegate!.flipperView(self, viewForPageAt: nextPageIndex - 1 )
         addSubview(nextView!)
         
         return true

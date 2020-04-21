@@ -19,6 +19,8 @@ public class PAFlipperViewPageSourceAndDelegate : PAFlipperViewDataSource, PAFli
     private var currentPage : Int = 0
     public weak var pageChangeDelegate : PAFlipperViewPageDelegate?
     private weak var parent : PAParent?
+    private var primaryItem : PASegmentView?
+    
     
     public init(_ viewProvider : PASegmentViewProvider, _ itemSource : PAItemControllerSource, _ parent : PAParent) {
         self.viewProvider = viewProvider
@@ -105,6 +107,7 @@ public class PAFlipperViewPageSourceAndDelegate : PAFlipperViewDataSource, PAFli
         if(self.currentPage == index) {
             let tableCell = page as! PASegmentView
             tableCell.viewWillAppear()
+            self.primaryItem = tableCell
         }
     }
     
@@ -113,7 +116,14 @@ public class PAFlipperViewPageSourceAndDelegate : PAFlipperViewDataSource, PAFli
         tableCell.viewDidDisappear()
         if(self.currentPage == index) {
             self.currentPage = -1
+            self.primaryItem = nil
         }
+        tableCell.unBind()
+    }
+    
+    public func flipperView(_ flipperView : PAFlipperView, destroy page: UIView, forRowAt index: Int) {
+        let tableCell = page as! PASegmentView
+        tableCell.unBindInternal()
     }
     
     public func itemAtIndexPath(_ index: Int) -> PAItemController {
@@ -160,19 +170,15 @@ public class PAFlipperViewPageSourceAndDelegate : PAFlipperViewDataSource, PAFli
 //        }
 //    }
     
-    public func onPageChanged(_ flipperView: PAFlipperView, page: Int) {
-        
+    public func onPageChanged(_ flipperView: PAFlipperView, pageIndex: Int, page : UIView) {
+        let oldCell = self.primaryItem
+        oldCell?.viewDidDisappear()
+        self.currentPage = pageIndex
+        let newCell = page as! PASegmentView
+        newCell.viewWillAppear()
+        self.pageChangeDelegate?.onPageChanged(flipperView, pageIndex: pageIndex, page: page)
+        self.primaryItem = newCell
     }
-    
-    
-//    private func setCurrentPage(_ tableView : UITableView, _ ip : IndexPath) {
-//        let oldCell = tableView.cellForRow(at: self.currentPage)
-//        (oldCell as? PATableViewCell)?.willEndDisplay()
-//        self.currentPage = ip
-//        let newCell = tableView.cellForRow(at: self.currentPage)
-//        (newCell as? PATableViewCell)?.willDisplay()
-//        self.pageChangeDelegate?.onPageChanged(tableView, pagePath: ip)
-//    }
     
     
     
