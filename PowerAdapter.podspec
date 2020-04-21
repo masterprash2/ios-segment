@@ -35,10 +35,10 @@ TODO: Add long description of the pod here.
   s.dependency 'RxSwiftExt', '~> 5'
   s.dependency 'RxCocoa', '~> 5'
   s.dependency 'DeepDiff'
+  #s.resources = ['PowerAdapter/Classes/**/*.{xib}']
   
-  
-  # s.resource_bundles = {
-  #   'PowerAdapter' => ['PowerAdapter/Assets/*.png']
+  #s.resource_bundles = {
+   #  'PowerAdapter' => ['PowerAdapter/**/*.xib']
   # }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'

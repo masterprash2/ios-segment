@@ -10,24 +10,51 @@ import Foundation
 import PowerAdapter
 import UIKit
 
-class TableSegmentView : PASegmentView {
-    
+class TableSegmentView : PASegmentView, MSSTabBarViewDataSource {
+
     
     @IBOutlet var tableView : UICollectionView!
     
-    private var tableDelegate : PACollectionViewDelegate!
+    private var tableDelegate : PageDelegateWithTabBar!
+    private var tabBar : MSSTabBarView!
     
     override func bind() {
-        self.tableView = UICollectionView.init(frame: self.bounds, collectionViewLayout: UICollectionViewFlowLayout.init())
-        addSubview(self.tableView)
         
+        let layout = UICollectionViewFlowLayout.init()
+        layout.scrollDirection = .horizontal
+        self.tableView = UICollectionView.init(frame: self.bounds, collectionViewLayout: layout)
+        addSubview(self.tableView)
+        setupTabBar()
         let controller = getController() as! TableSegmentController
-        tableDelegate = PACollectionPageViewDelegate(TableCellProvider(), controller.sectionSource, self)
+        tableDelegate = PageDelegateWithTabBar(TableCellProvider(), controller.sectionSource, self)
         tableView.bounds = self.bounds
         tableView.backgroundColor = UIColor.yellow
         tableDelegate.bind(self.tableView)
+        tableDelegate.tabBar = tabBar
     }
+    
+    private func setupTabBar() {
+        tabBar = MSSTabBarView.init(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: 100))
+        addSubview(tabBar)
+        tabBar.setDataSource(self, animated: false)
+        tabBar.tabStyle = .text
+        tabBar.setSizingStyle(.sizeToFit)
+    }
+    
+}
 
-
+extension TableSegmentView {
+    
+    func numberOfItems(for tabBarView: MSSTabBarView) -> Int {
+        return 4
+    }
+    
+    func tabBarView(_ tabBarView: MSSTabBarView, populateTab tab: MSSTabBarCollectionViewCell, at index: Int) {
+    }
+    
+    
+    func tabTitles(for tabBarView: MSSTabBarView) -> [String]? {
+        return ["One","Two","-Fout-==","===Three==="]
+    }
     
 }

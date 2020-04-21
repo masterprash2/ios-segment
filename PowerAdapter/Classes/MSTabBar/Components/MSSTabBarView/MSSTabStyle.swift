@@ -9,7 +9,7 @@
 
 import Foundation
 
-enum MSSTabStyle : Int {
+public enum MSSTabStyle : Int {
     case text
     case image
     case imageAndText

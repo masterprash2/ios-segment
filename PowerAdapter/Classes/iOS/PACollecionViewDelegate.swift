@@ -13,12 +13,14 @@ import UIKit
 open class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UICollectionViewDataSource {
     
     private let cellProvider : PACollectionViewCellProvider
-    private let sections : PASectionDatasource
+    public let sections : PASectionDatasource
     private let disposeBag = DisposeBag()
     private let parentLifecycle : PALifecycle
     private weak var parent : PAParent?
     weak var collectionView : UICollectionView?
     private var updates = [(Int, PASourceUpdateEventModel)]()
+    
+    public private(set) var totalNumberOfRowsInAllSections : Int = 0
     
     public init(_ cellProvider : PACollectionViewCellProvider,_ sections : PASectionDatasource, _ parent : PAParent) {
         self.cellProvider = cellProvider
@@ -56,10 +58,18 @@ open class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UIColl
         }) { (value) in
             self.sections.invalidateContentCount()
             }
-            
+        updateTotalRows()
         default : updates.append(update)
         }
         
+    }
+    
+    private func updateTotalRows() {
+        var rows = 0;
+        for i in 0..<self.sections.count() {
+            rows = rows + self.sections.numberOfRowsInSection(i)
+        }
+        self.totalNumberOfRowsInAllSections = rows
     }
     
     

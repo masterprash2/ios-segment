@@ -21,7 +21,7 @@ enum MSSIndicatorStyle : Int {
 
 //#pragma clang diagnostic push
 //#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-let MSSTabBarViewCellIdentifier = "tabCell"
+let MSSTabBarViewCellIdentifier = "MSSTabBarCollectionViewCell"
 // defaults
 let MSSTabBarViewDefaultHeight: CGFloat = 44.0
 let MSSTabBarViewDefaultTabIndicatorHeight: CGFloat = 2.0
@@ -35,7 +35,7 @@ let MSSTabBarViewTabTransitionSnapRatio: CGFloat = 0.5
 let MSSTabBarViewTabOffsetInvalid: CGFloat = -1.0
 private var _sizingCell: MSSTabBarCollectionViewCell?
 
-@objc protocol MSSTabBarViewDataSource: NSObjectProtocol {
+@objc public protocol MSSTabBarViewDataSource: NSObjectProtocol {
     /// The number of items to display in the tab bar.
     /// - Parameter tabBarView:
     /// The tab bar view.
@@ -64,7 +64,7 @@ private var _sizingCell: MSSTabBarCollectionViewCell?
     @objc optional func defaultTabIndex(for tabBarView: MSSTabBarView) -> Int
 }
 
-@objc protocol MSSTabBarViewDelegate: NSObjectProtocol {
+@objc public  protocol MSSTabBarViewDelegate: NSObjectProtocol {
     /// A tab has been selected.
     /// - Parameters:
     ///   - tabBarView:
@@ -74,28 +74,27 @@ private var _sizingCell: MSSTabBarCollectionViewCell?
     @objc optional func tabBarView(_ tabBarView: MSSTabBarView, tabSelectedAt index: Int)
 }
 
-class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    private var _tabOffset: CGFloat = 0.0
-    var tabOffset: CGFloat {
-        get {
-            _tabOffset
+public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    public var tabOffset: CGFloat = 0.0 {
+        willSet {
+            previousTabOffset = self.tabOffset
         }
-        set(offset) {
-            previousTabOffset = _tabOffset
-            _tabOffset = offset
-            updateTabBar(forTabOffset: offset)
+        didSet {
+            updateTabBar(forTabOffset: tabOffset)
         }
     }
     /// The object that acts as the data source for the tab bar.
 
-    @IBOutlet private weak var _dataSource: MSSTabBarViewDataSource?
     @IBOutlet weak var dataSource: MSSTabBarViewDataSource? {
-        get {
-            _dataSource
-        }
-        set(dataSource) {
+        didSet {
             animateDataSourceTransition = false
-            doSetDataSource(dataSource)
+            reset()
+            //        if dataSource?.responds(to: #selector(MSSTabbedPageViewController.defaultTabIndex(for:))) ?? false {
+                        defaultTabIndex = dataSource?.defaultTabIndex?(for: self) ?? 0
+            //        }
+            collectionView?.reloadData()
+            setNeedsLayout()
+                
         }
     }
     /// The object that acts as a delegate for the tab bar.
@@ -107,7 +106,7 @@ class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
     /// Whether the user can manually scroll the tab bar.
 
     private var _scrollEnabled = false
-    var scrollEnabled: Bool {
+    public var scrollEnabled: Bool {
         get {
             return collectionView?.isScrollEnabled ?? false
         }
@@ -118,7 +117,7 @@ class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
     /// The background view for the tab bar.
 
     private var _backgroundView: UIView?
-    var backgroundView: UIView? {
+    public var backgroundView: UIView? {
         get {
             _backgroundView
         }
@@ -131,38 +130,43 @@ class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
         }
     }
     /// The internal horizontal label padding value for each tab.
-    var tabPadding : CGFloat!
+    public var tabPadding : CGFloat!
     /// The content inset for the tabs.
-    var contentInset: UIEdgeInsets!
+    public var contentInset: UIEdgeInsets!
     /// The sizing style to use for tabs in the tab bar.
     /// MSSTabSizingStyleSizeToFit - size tabs to the size of their contents.
     /// MSSTabSizingStyleDistributed - distribute the tabs equally in the frame of the tab bar (Max 5).
-    var sizingStyle: MSSTabSizingStyle!
+    var sizingStyle: MSSTabSizingStyle = .sizeToFit
     /// The style for tabs in the tab bar.
     /// MSSTabStyleImage - use images as the content for each tab.
     /// MSSTabStyleText - use text as the content for each tab.
-    var tabStyle: MSSTabStyle!
+    public var tabStyle: MSSTabStyle! {
+        didSet {
+            _sizingCell?.tabStyle = tabStyle
+            reloadData()
+        }
+    }
     /// The style for the tab indicator.
     /// MSSIndicatorStyleLine - use a coloured line as the indicator (default).
     /// MSSIndicatorStyleImage - use an image as the indicator.
-    var indicatorStyle: MSSIndicatorStyle!
+     var indicatorStyle: MSSIndicatorStyle!
     /// The appearance attributes for tabs.
     /// Available attributes:
     /// NSForegroundColorAttributeName, NSFontAttributeName, NSBackgroundColorAttributeName
-    var tabAttributes: [String : Any]?
+    public var tabAttributes: [String : Any]?
     /// The appearance attributes for selected tabs.
     /// Available attributes:
     /// NSForegroundColorAttributeName, NSFontAttributeName, NSBackgroundColorAttributeName
-    var selectedTabAttributes: [String : Any]?
+    public var selectedTabAttributes: [String : Any]?
     /// The appearance attributes for the tab indicator.
-    var indicatorAttributes: [String : Any]?
+    public var indicatorAttributes: [String : Any]?
     /// The transition style for the tabs to use during transitioning.
     var tabTransitionStyle: MSSTabTransitionStyle!
     /// The transition style for the tab indicator to use during transitioning.
-    var indicatorTransitionStyle: MSSTabTransitionStyle!
+    var indicatorTransitionStyle: MSSTabTransitionStyle = .progressive
     /// Whether the tab bar contents can be scrolled.
 
-    var userScrollEnabled: Bool {
+    public var userScrollEnabled: Bool {
         get {
             return scrollEnabled
         }
@@ -175,11 +179,11 @@ class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
     /// The height of the selection indicator.
     var selectionIndicatorHeight: CGFloat!
     /// The color of the tab selection indicator.
-    var tabIndicatorColor: UIColor?
+     var tabIndicatorColor: UIColor?
     /// The text color of the tabs.
-    var tabTextColor: UIColor?
+     var tabTextColor: UIColor?
     /// The font used for the tabs. A nil value uses the default font from the cell nib.
-    var tabTextFont: UIFont?
+     var tabTextFont: UIFont?
 
     /// Initialize a tab bar with a specified height.
     /// - Parameter height:
@@ -192,7 +196,7 @@ class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
     /// The index of the current tab.
     ///   - animated:
     /// Animate the tab index transition.
-    func setTabIndex(_ index: Int, animated: Bool) {
+    public func setTabIndex(_ index: Int, animated: Bool) {
         if animated {
             animatingTabChange = true
             UIView.animate(withDuration: 0.25, animations: {
@@ -211,9 +215,9 @@ class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
     /// The data source.
     ///   - animated:
     /// Animate the data source transition.
-    func setDataSource(_ dataSource: MSSTabBarViewDataSource?, animated: Bool) {
+    public func setDataSource(_ dataSource: MSSTabBarViewDataSource?, animated: Bool) {
         animateDataSourceTransition = animated
-        doSetDataSource(dataSource)
+        self.dataSource = dataSource
     }
 
     /// Set the tab and selection indicator transition style.
@@ -276,7 +280,7 @@ class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
         preconditionFailure()
     }
 
-    override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         baseInit()
     }
@@ -313,17 +317,18 @@ class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
     }
 
 // MARK: - Lifecycle
-    override func willMove(toSuperview newSuperview: UIView?) {
+    override public func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
 
         if collectionView?.superview == nil {
 
             // create sizing cell if required
-            let cellNib = UINib(nibName: NSStringFromClass(MSSTabBarCollectionViewCell.self.self), bundle: Bundle(for: MSSTabBarCollectionViewCell.self))
+            let nibName = String(NSStringFromClass(MSSTabBarCollectionViewCell.self).split(separator: ".")[1])
+            let cellNib = UINib(nibName:nibName , bundle: Bundle(for: MSSTabBarCollectionViewCell.self))
             collectionView?.register(cellNib, forCellWithReuseIdentifier: MSSTabBarViewCellIdentifier)
-            if _sizingCell == nil {
+//            if _sizingCell == nil {
                 _sizingCell = cellNib.instantiate(withOwner: self, options: nil)[0] as? MSSTabBarCollectionViewCell
-            }
+//            }
 
             // collection view
             mss_addExpandingSubview(collectionView)
@@ -340,7 +345,7 @@ class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
         }
     }
 
-    override func layoutSubviews() {
+    override public func layoutSubviews() {
         super.layoutSubviews()
 
         updateTabBar(forTabIndex: Int(tabOffset))
@@ -353,15 +358,15 @@ class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
     }
 
 // MARK: - Collection View data source
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
 
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return evaluateDataSource()
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MSSTabBarViewCellIdentifier, for: indexPath) as? MSSTabBarCollectionViewCell
         updateCellAppearance(cell)
@@ -386,15 +391,18 @@ class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
     }
 
 // MARK: - Collection View delegate
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewFlowLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 
         var cellSize = CGSize.zero
+        
+        let layout = collectionViewLayout as! UICollectionViewFlowLayout
 
         if sizingStyle == .distributed && tabCount <= MSSTabBarViewMaxDistributedTabs {
             // distributed in frame
 
             let contentInsetTotal: CGFloat = contentInset.left + contentInset.right
-            let totalSpacing = CGFloat(collectionViewLayout.minimumInteritemSpacing * CGFloat.init(integerLiteral: tabCount - 1))
+            let totalSpacing = CGFloat(layout.minimumInteritemSpacing * CGFloat.init(integerLiteral: tabCount - 1))
             let totalWidth = collectionView.bounds.size.width - contentInsetTotal - totalSpacing
 
             return CGSize(width: totalWidth / CGFloat(tabCount), height: collectionView.bounds.size.height)
@@ -407,7 +415,7 @@ class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
                     dataSource?.tabBarView(self, populateTab: _sizingCell, at: indexPath.item)
                 }
 //            } else {
-//                _sizingCell?.title = title(at: indexPath.row)
+                _sizingCell?.title = title(at: indexPath.row)
 //            }
 
             var requiredSize = _sizingCell?.systemLayoutSizeFitting(CGSize(width: 0.0, height: collectionView.bounds.size.height), withHorizontalFittingPriority: .defaultLow, verticalFittingPriority: .required)
@@ -420,7 +428,7 @@ class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
         return cellSize
     }
 
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 
 //        if delegate?.responds(to: #selector(MSSTabbedPageViewController.tabBarView(_:tabSelectedAt:))) ?? false {
             delegate?.tabBarView?(self, tabSelectedAt: indexPath.row)
@@ -469,7 +477,7 @@ class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
         reloadData()
     }
 
-    func setSizingStyle(_ sizingStyle: MSSTabSizingStyle) {
+    public func setSizingStyle(_ sizingStyle: MSSTabSizingStyle) {
         if (sizingStyle == .distributed && tabCount <= MSSTabBarViewMaxDistributedTabs) || sizingStyle == .sizeToFit {
             self.sizingStyle = sizingStyle
             reloadData()
@@ -478,13 +486,8 @@ class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
         }
     }
 
-    func setTabStyle(_ tabStyle: MSSTabStyle) {
-        self.tabStyle = tabStyle
-        _sizingCell?.tabStyle = tabStyle
-        reloadData()
-    }
-
-    override var tintColor: UIColor! {
+    
+    override public var tintColor: UIColor! {
         get {
             return super.tintColor
         }
@@ -765,15 +768,7 @@ class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
         previousTabOffset = MSSTabBarViewTabOffsetInvalid
     }
 
-    func doSetDataSource(_ dataSource: MSSTabBarViewDataSource?) {
-        self.dataSource = dataSource
-        reset()
-//        if dataSource?.responds(to: #selector(MSSTabbedPageViewController.defaultTabIndex(for:))) ?? false {
-            defaultTabIndex = dataSource?.defaultTabIndex?(for: self) ?? 0
-//        }
-        collectionView?.reloadData()
-        setNeedsLayout()
-    }
+    
 
     func reloadData() {
         if tabOffset == MSSTabBarViewTabOffsetInvalid {

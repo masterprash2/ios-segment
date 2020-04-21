@@ -15,6 +15,7 @@
 		334F1B6323FBD085003BA463 /* ContentSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334F1B6223FBD085003BA463 /* ContentSource.swift */; };
 		3375A848244E15D900EB2E82 /* FlipperSegmentProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3375A847244E15D900EB2E82 /* FlipperSegmentProvider.swift */; };
 		3375A84A244E165900EB2E82 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3375A849244E165900EB2E82 /* ContentView.swift */; };
+		3375A8E6244F039200EB2E82 /* PageDelegateWithTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3375A8E5244F039200EB2E82 /* PageDelegateWithTabBar.swift */; };
 		338A49C9243DDB6A0095D02A /* FlipperSegmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338A49C8243DDB6A0095D02A /* FlipperSegmentView.swift */; };
 		33A881F2243B71E400FAF7D0 /* TableSegmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A881F1243B71E400FAF7D0 /* TableSegmentView.swift */; };
 		33A881F4243C458400FAF7D0 /* TableSegmentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A881F3243C458400FAF7D0 /* TableSegmentController.swift */; };
@@ -50,6 +51,7 @@
 		334F1B6223FBD085003BA463 /* ContentSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ContentSource.swift; path = dataSource/ContentSource.swift; sourceTree = "<group>"; };
 		3375A847244E15D900EB2E82 /* FlipperSegmentProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlipperSegmentProvider.swift; sourceTree = "<group>"; };
 		3375A849244E165900EB2E82 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		3375A8E5244F039200EB2E82 /* PageDelegateWithTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageDelegateWithTabBar.swift; sourceTree = "<group>"; };
 		338A49C8243DDB6A0095D02A /* FlipperSegmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlipperSegmentView.swift; sourceTree = "<group>"; };
 		33A881F1243B71E400FAF7D0 /* TableSegmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableSegmentView.swift; sourceTree = "<group>"; };
 		33A881F3243C458400FAF7D0 /* TableSegmentController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableSegmentController.swift; sourceTree = "<group>"; };
@@ -160,6 +162,7 @@
 				338A49C8243DDB6A0095D02A /* FlipperSegmentView.swift */,
 				3375A847244E15D900EB2E82 /* FlipperSegmentProvider.swift */,
 				3375A849244E165900EB2E82 /* ContentView.swift */,
+				3375A8E5244F039200EB2E82 /* PageDelegateWithTabBar.swift */,
 			);
 			name = "Example for PowerAdapter";
 			path = PowerAdapter;
@@ -428,6 +431,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3375A8E6244F039200EB2E82 /* PageDelegateWithTabBar.swift in Sources */,
 				334F1B6323FBD085003BA463 /* ContentSource.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				3375A84A244E165900EB2E82 /* ContentView.swift in Sources */,

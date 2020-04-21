@@ -9,7 +9,7 @@
 
 import Foundation
 
-enum MSSTabSizingStyle : Int {
+public enum MSSTabSizingStyle : Int {
     case sizeToFit
     case distributed
 }

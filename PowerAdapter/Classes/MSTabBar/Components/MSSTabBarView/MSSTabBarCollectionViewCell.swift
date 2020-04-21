@@ -9,9 +9,9 @@
 
 import UIKit
 
-class MSSTabBarCollectionViewCell: UICollectionViewCell {
+public class MSSTabBarCollectionViewCell: UICollectionViewCell {
     
-    var textColor: UIColor? {
+    public var textColor: UIColor? {
         didSet {
             if !isSelected {
                 textTitleLabel.textColor = textColor
@@ -20,7 +20,7 @@ class MSSTabBarCollectionViewCell: UICollectionViewCell {
         }
     }
 
-    var textFont: UIFont? {
+    public var textFont: UIFont? {
         didSet{
             if !isSelected {
                 textTitleLabel.font = textFont
@@ -29,7 +29,7 @@ class MSSTabBarCollectionViewCell: UICollectionViewCell {
         }
     }
 
-    var tabBackgroundColor: UIColor? {
+    public var tabBackgroundColor: UIColor? {
         didSet {
             if !isSelected {
                 backgroundColor = tabBackgroundColor
@@ -37,7 +37,7 @@ class MSSTabBarCollectionViewCell: UICollectionViewCell {
         }
     }
 
-    var selectedTextColor: UIColor? {
+    public var selectedTextColor: UIColor? {
         didSet {
             if isSelected {
                 textTitleLabel.textColor = selectedTextColor
@@ -46,7 +46,7 @@ class MSSTabBarCollectionViewCell: UICollectionViewCell {
         }
     }
 
-    var selectedTextFont: UIFont? {
+    public var selectedTextFont: UIFont? {
         didSet {
             if isSelected {
                 textTitleLabel.font = selectedTextFont
@@ -55,7 +55,7 @@ class MSSTabBarCollectionViewCell: UICollectionViewCell {
         }
     }
 
-    var selectedTabBackgroundColor: UIColor? {
+    public var selectedTabBackgroundColor: UIColor? {
         didSet {
             if isSelected {
                 backgroundColor = selectedTabBackgroundColor
@@ -63,14 +63,14 @@ class MSSTabBarCollectionViewCell: UICollectionViewCell {
         }
     }
 
-    var selectionProgress: CGFloat = 0.0 {
+    public var selectionProgress: CGFloat = 0.0 {
         didSet {
             updateProgressiveAppearance()
             updateSelectionAppearance()
         }
     }
 
-    var alphaEffectEnabled: Bool = true {
+    public var alphaEffectEnabled: Bool = true {
         didSet {
             if alphaEffectEnabled {
                 updateProgressiveAppearance()
@@ -85,12 +85,12 @@ class MSSTabBarCollectionViewCell: UICollectionViewCell {
 
     
 
-    func setContentBottomMargin(_ contentBottomMargin: CGFloat) {
+    public func setContentBottomMargin(_ contentBottomMargin: CGFloat) {
         containerViewBottomMargin.constant = contentBottomMargin
     }
 
     /// The style of the tab.
-    var tabStyle: MSSTabStyle! {
+    public var tabStyle: MSSTabStyle! {
         didSet {
             switch tabStyle {
                 case .imageAndText:
@@ -111,7 +111,7 @@ class MSSTabBarCollectionViewCell: UICollectionViewCell {
     /// The image displayed in the tab cell.
     /// NOTE - only visible when using MSSTabStyleImage.
 
-    var image: UIImage? {
+    public var image: UIImage? {
         get {
             return imageImageView.image
         }
@@ -125,7 +125,7 @@ class MSSTabBarCollectionViewCell: UICollectionViewCell {
     /// The text displayed in the tab cell.
     /// NOTE - only visible when using MSSTabStyleText.
 
-    var title: String? {
+    public var title: String? {
         get {
             return textTitleLabel.text
         }

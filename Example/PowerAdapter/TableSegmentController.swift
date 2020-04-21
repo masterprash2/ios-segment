@@ -35,7 +35,7 @@ class TableSegmentController: PAController {
         
         DispatchQueue.global(qos: .background).async {
             self.sectionSource.addSection(item: TableItemController(id: 11111, type: .section), source: self.createDataSource())
-            self.sectionSource.addSection(item: TableItemController(id: 11112, type: .section), source: self.createMultiPlexSource())
+//            self.sectionSource.addSection(item: TableItemController(id: 11112, type: .section), source: self.createMultiPlexSource())
         }
     }
     
@@ -90,7 +90,7 @@ class TableSegmentController: PAController {
     
     private func createItems() -> [TableItemController] {
         var arr = [TableItemController]()
-        for index in 1...100 {
+        for index in 1...4 {
             arr.append(TableItemController(id: index, type: .content))
         }
         //        counter = counter + 5

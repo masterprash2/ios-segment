@@ -105,15 +105,15 @@ class MSSTabbedPageViewController: MSSPageViewController, MSSTabBarViewDataSourc
     }
 
 // MARK: - Page View Controller delegate
-    @objc override func pageViewController(_ pageViewController: MSSPageViewController?, didScrollToPageOffset pageOffset: CGFloat, direction scrollDirection: MSSPageViewControllerScrollDirection) {
+    override func pageViewController(_ pageViewController: MSSPageViewController?, didScrollToPageOffset pageOffset: CGFloat, direction scrollDirection: MSSPageViewControllerScrollDirection) {
         tabBarView?.tabOffset = pageOffset
     }
 
-    @objc override func pageViewController(_ pageViewController: MSSPageViewController?, willScrollToPage newPage: Int, currentPage: Int) {
+    override func pageViewController(_ pageViewController: MSSPageViewController?, willScrollToPage newPage: Int, currentPage: Int) {
         tabBarView?.isUserInteractionEnabled = false
     }
 
-    @objc override func pageViewController(_ pageViewController: MSSPageViewController?, didScrollToPage page: Int) {
+    override func pageViewController(_ pageViewController: MSSPageViewController?, didScrollToPage page: Int) {
 
         if !isDragging {
             tabBarView?.isUserInteractionEnabled = true

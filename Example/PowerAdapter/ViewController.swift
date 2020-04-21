@@ -25,7 +25,7 @@ class ViewController: PAViewController {
         super.viewDidLoad()
         segmentContainer.bindParent(self)
         let view = FlipperSegmentView(frame: CGRect(x: 0, y: 0, width: self.segmentContainer.frame.size.width, height: self.segmentContainer.frame.size.height))
-        segmentContainer.setSegment(PASegment(view,TableSegmentController()))
+//        segmentContainer.setSegment(PASegment(view,TableSegmentController()))
         
     }
     
@@ -33,7 +33,7 @@ class ViewController: PAViewController {
         super.viewWillAppear(animated)
         let view = TableSegmentView(frame: CGRect(x: 0, y: 0, width: self.segmentContainer.frame.size.width, height: self.segmentContainer.frame.size.height))
         
-//        segmentContainer.setSegment(PASegment(view,TableSegmentController()))
+        segmentContainer.setSegment(PASegment(view,TableSegmentController()))
     }
     
     
