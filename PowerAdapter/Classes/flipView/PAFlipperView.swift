@@ -23,7 +23,7 @@ public protocol PAFlipperViewPageDelegate : AnyObject {
     func onPageChanged(_ flipperView : PAFlipperView, pageIndex: Int, page : UIView)
 }
 
-public class PAFlipperView : UIView {
+public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
     
     //enum forflip direction
     enum PAFlipDirection : Int {
@@ -66,6 +66,7 @@ public class PAFlipperView : UIView {
         super.init(frame: frame)
         tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapped(_:)))
         panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(panned(_:)))
+        panRecognizer?.delegate = self
         addGestureRecognizer(panRecognizer!)
         addGestureRecognizer(tapRecognizer!)
     }
@@ -357,6 +358,14 @@ public class PAFlipperView : UIView {
     
     
     
+    
+    public override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        let translation = self.panRecognizer!.translation(in: self)
+        let isVerticalPan = abs(translation.y) > abs(translation.x)
+        return isVerticalPan && gestureRecognizer === panRecognizer
+    }
+    
+    
     @objc func panned(_ recognizer: UIPanGestureRecognizer?) {
         
         if !animating {
@@ -364,7 +373,7 @@ public class PAFlipperView : UIView {
             let translation = CGFloat(recognizer?.translation(in: self).y ?? 0.0)
             
             var progress = translation / bounds.size.height
-            
+
             if flipDirection == .FlipDirectionTop {
                 progress = min(progress, 0)
             } else {
