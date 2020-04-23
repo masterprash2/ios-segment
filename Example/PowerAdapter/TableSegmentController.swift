@@ -33,10 +33,10 @@ class TableSegmentController: PAController {
     func onViewDidLoad() {
         NSLog("Controller - Load")
         
-        DispatchQueue.global(qos: .background).async {
+//        DispatchQueue.global(qos: .background).async {
             self.sectionSource.addSection(item: TableItemController(id: 11111, type: .section), source: self.createDataSource())
 //            self.sectionSource.addSection(item: TableItemController(id: 11112, type: .section), source: self.createMultiPlexSource())
-        }
+//        }
     }
     
     func onViewWillAppear() {
@@ -82,10 +82,10 @@ class TableSegmentController: PAController {
     //    private var counter = 0
     
     private func setArraySourceItemsDelayed(source : PAArraySource) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { // in half a second...
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { // in half a second...
             source.setItems(self.createItems())
             //            self.setArraySourceItemsDelayed(source: source)
-        }
+//        }
     }
     
     private func createItems() -> [TableItemController] {

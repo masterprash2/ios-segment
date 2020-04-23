@@ -17,6 +17,7 @@ class BaseTableCell: PASegmentView  {
         segmentContainer.frame = CGRect(x: 0, y: 0, width: self.frame.size.width
             , height: self.frame.size.height)
         let view = FlipperSegmentView()
+        view.backgroundColor = UIColor.blue
         addSubview(segmentContainer)
         view.frame = CGRect(x: 0, y: 0, width: self.frame.size.width
         , height: self.frame.size.height)

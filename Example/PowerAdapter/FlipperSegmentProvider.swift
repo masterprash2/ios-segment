@@ -13,7 +13,10 @@ class FlipperSegmentProvider: PASegmentViewProvider {
     
     func segmentViewForType(_ flipperView: PAFlipperView, _ type: Int) -> PASegmentView {
         let frame = CGRect.init(x: 0, y: 0, width: flipperView.frame.size.width, height: flipperView.frame.size.height)
-        return ContentView(frame: frame)
+        
+        let view = ContentView(frame: frame)
+        view.backgroundColor = UIColor.blue
+        return view
     }
     
     

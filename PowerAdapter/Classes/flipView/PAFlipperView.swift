@@ -68,7 +68,9 @@ public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
             flipToPageIndex = 0
             lastPageNotificationIndex = -1
             //pagecontrol current page
-            perform(#selector(setFirstPage), with: nil, afterDelay: 0.001)
+            DispatchQueue.main.async {
+                self.setFirstPage()
+            }
         }
     }
     
