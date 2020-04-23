@@ -12,15 +12,13 @@ public protocol PAFlipperViewDataSource : AnyObject {
 
 public protocol PAFlipperViewPageDelegate : AnyObject {
     
-    func flipperView(_ flipperView : PAFlipperView, viewForPageAt index: Int) -> UIView
-
-    func flipperView(_ flipperView : PAFlipperView, willDisplay page: UIView, forRowAt index: Int)
+    func flipperView(_ flipperView : PAFlipperView, loadPageAt index: Int) -> UIView
     
-    func flipperView(_ flipperView : PAFlipperView, didEndDisplaying page: UIView, forRowAt index: Int)
+    func flipperView(_ flipperView : PAFlipperView, willUnload page : UIView, at index: Int)
     
-    func flipperView(_ flipperView : PAFlipperView, destroy page: UIView, forRowAt index: Int)
+    func flipperView(_ flipperView : PAFlipperView, current page : UIView, at index: Int)
     
-    func onPageChanged(_ flipperView : PAFlipperView, pageIndex: Int, page : UIView)
+    func onPageChanged(_ flipperView : PAFlipperView, pageIndex: Int)
 }
 
 public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
@@ -36,7 +34,9 @@ public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
     private var pannedLastPage = 0
     
     private var currentPageIndex = 0
-    private var nextPageIndex = 0
+    
+    private var flipToPageIndex = 0
+    
     private var numberOfPages = 0
     private var backgroundLayer: CALayer?
     private var flipLayer: CALayer?
@@ -55,10 +55,21 @@ public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
     private let current = Page()
     private let nextPage = Page()
     
-    private var currentView : UIView?
-    private var nextView : UIView?
+    private var currentViewPage : Page?
+    private var nextViewPage : Page?
     
-    weak var dataSource : PAFlipperViewDataSource?
+    weak var dataSource : PAFlipperViewDataSource? {
+        didSet {
+            numberOfPages = self.dataSource!.numberOfPagesinFlipper(self)
+            currentPageIndex = -1
+            flipToPageIndex = 0
+            lastPageNotificationIndex = -1
+            //pagecontrol current page
+            perform(#selector(setFirstPage), with: nil, afterDelay: 0.001)
+        }
+    }
+    
+    
     weak var delegate : PAFlipperViewPageDelegate?
     
     //#pragma init method
@@ -79,6 +90,8 @@ public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
     
     func initFlip() {
         
+        let currentView = currentViewPage?.view
+        let nextView = nextViewPage?.view
         //create image from UIView
         let currentImage = image(byRenderingView: currentView)
         let newImage = image(byRenderingView: nextView)
@@ -216,6 +229,12 @@ public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
         }
     }
     
+    private func copyPage(_ page : Page, to: Page) {
+        to.isValid = page.isValid
+        to.position = page.position
+        to.view = page.view
+    }
+    
     //clear flip & background layer
     @objc func cleanupFlip() {
         
@@ -227,42 +246,42 @@ public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
         
         animating = false
         
-        
         if setNextViewOnCompletion {
-            let oldPageIndex = currentPageIndex
-            currentView?.removeFromSuperview()
-            currentPageIndex = nextPageIndex
-            if(currentView != nil) {
-                delegate!.flipperView(self, didEndDisplaying: currentView!, forRowAt: (oldPageIndex - 1))
-                delegate!.flipperView(self, destroy: currentView!, forRowAt: (oldPageIndex - 1))
+            current.view?.removeFromSuperview()
+            if(flipDirection == .FlipDirectionBottom) {
+                copyPage(current, to: nextPage)
+                copyPage(previous, to: current)
+                currentPageIndex = current.position
+                delegate?.flipperView(self, current: current.view!, at: current.position)
+                initPage(previous, with: previous.position - 1)
+            } else {
+                copyPage(current, to: previous)
+                copyPage(nextPage, to: current)
+                currentPageIndex = current.position
+                delegate?.flipperView(self, current: current.view!, at: current.position)
+                initPage(nextPage, with: nextPage.position + 1)
             }
-            currentView = nextView
-            if(currentView != nil) {
-                delegate!.flipperView(self, willDisplay: currentView!, forRowAt: (currentPageIndex - 1))
-            }
-            nextView = nil
+            
         } else {
-            nextView?.removeFromSuperview()
-            if(nextView != nil) {
-                delegate!.flipperView(self, destroy: nextView!, forRowAt: (nextPageIndex - 1))
-            }
-            nextView = nil
+            nextViewPage?.view?.removeFromSuperview()
         }
+        
         postPageChangeNotification()
-        currentView?.alpha = 1
+        currentViewPage = current
+        nextViewPage = nil
+        current.view?.alpha = 1
     }
     
     
     private func postPageChangeNotification() {
-        if(currentView == nil) {
+        if(currentViewPage == nil) {
             return
         }
         if(lastPageNotificationIndex != currentPageIndex) {
             lastPageNotificationIndex = currentPageIndex
             let index = currentPageIndex
-            let view = currentView!
             DispatchQueue.main.async {
-                self.delegate?.onPageChanged(self, pageIndex: index, page: view)
+                self.delegate?.onPageChanged(self, pageIndex: index)
             }
         }
     }
@@ -282,14 +301,14 @@ public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
         setNextViewOnCompletion = true
         animating = true
         
-        nextView?.alpha = 0
+        nextViewPage?.view?.alpha = 0
         
         UIView.beginAnimations("", context: nil)
         UIView.setAnimationDuration(0.5)
         UIView.setAnimationDelegate(self)
         UIView.setAnimationDidStop(#selector(animationDidStop(_:finished:context:)))
         
-        nextView?.alpha = 1
+        nextViewPage?.view?.alpha = 1
         
         UIView.commitAnimations()
     }
@@ -311,30 +330,73 @@ public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
         
     }
     
-    public func setDataSource(_ dataSource: PAFlipperViewDataSource) {
-        self.dataSource = dataSource
-        numberOfPages = self.dataSource!.numberOfPagesinFlipper(self)
-        currentPageIndex = 0
-        lastPageNotificationIndex = 1
-        //pagecontrol current page
-        perform(#selector(setFirstPage), with: nil, afterDelay: 0.001)
+    
+    private func prepareInitialPages(_ showPage : Int) {
+        initPage(previous, with: showPage - 2 )
+        initPage(current, with: showPage - 1)
+        initPage(nextPage, with: showPage)
     }
     
+    private func preparePagesForFlip(_ page : Int) {
+        if(page > currentPageIndex) {
+            reInitPage(nextPage, with: page)
+        }
+        else if( page < currentPageIndex ) {
+            reInitPage(previous, with: page)
+        }
+    }
+    
+    private func reInitPage(_ page : Page, with index : Int) {
+        if(index != page.position) {
+            unloadPage(page)
+        }
+        initPage(page, with: index)
+    }
+    
+    private func initPage(_ page : Page, with index : Int) {
+        if(index != page.position) {
+            if(index >= 0 && index < numberOfPages) {
+                page.isValid = true
+                page.view = delegate!.flipperView(self, loadPageAt: index)
+                page.position = index
+            }
+        }
+        
+    }
+    
+    private func unloadPage(_ page : Page) {
+        if(page.isValid && page.position >= 0 && page.position < numberOfPages) {
+            delegate?.flipperView(self, willUnload: page.view!, at: page.position)
+        }
+        page.view?.removeFromSuperview()
+        page.reset()
+    }
+    
+    
     @objc func setFirstPage() {
-        setCurrentPage(1, animated: false)
+        prepareInitialPages(flipToPageIndex)
+        setCurrentPage(flipToPageIndex, animated: false)
     }
     
     func canSetCurrentPage(_ page: Int) -> Bool {
-        
         if page == currentPageIndex {
             return false
         }
         
-        flipDirection = page < currentPageIndex ? .FlipDirectionBottom : .FlipDirectionTop
-        nextPageIndex = page
-        nextView = delegate!.flipperView(self, viewForPageAt: nextPageIndex - 1 )
-        addSubview(nextView!)
+        preparePagesForFlip(page)
         
+        if(page < currentPageIndex) {
+            flipDirection = .FlipDirectionBottom
+            nextViewPage = previous
+        }
+        else {
+            flipDirection = .FlipDirectionTop
+            nextViewPage = nextPage
+        }
+        
+        if(nextViewPage?.view != nil) {
+            addSubview(nextViewPage!.view!)
+        }
         return true
     }
     
@@ -346,9 +408,9 @@ public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
                 var newPage: Int
                 
                 if (recognizer?.location(in: self).y ?? 0.0) < (bounds.size.height - bounds.origin.y) / 2 {
-                    newPage = max(1, currentPageIndex - 1)
+                    newPage = max(0, currentPageIndex - 1)
                 } else {
-                    newPage = min(currentPageIndex + 1, numberOfPages)
+                    newPage = min(currentPageIndex + 1, numberOfPages - 1)
                 }
                 
                 setCurrentPage(newPage, animated: true)
@@ -373,7 +435,7 @@ public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
             let translation = CGFloat(recognizer?.translation(in: self).y ?? 0.0)
             
             var progress = translation / bounds.size.height
-
+            
             if flipDirection == .FlipDirectionTop {
                 progress = min(progress, 0)
             } else {
@@ -392,14 +454,14 @@ public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
                         
                         self.pannedLastPage = currentPageIndex
                         if translation > 0 {
-                            if currentPageIndex > 1 {
+                            if currentPageIndex > 0 {
                                 _ = canSetCurrentPage(currentPageIndex - 1)
                             } else {
                                 self.pannedHasFailed = true
                                 return
                             }
                         } else {
-                            if currentPageIndex < numberOfPages {
+                            if currentPageIndex < numberOfPages - 1 {
                                 _ = canSetCurrentPage(currentPageIndex + 1)
                             } else {
                                 self.pannedHasFailed = true
@@ -456,7 +518,13 @@ public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
 
 
 class Page {
-    weak var view : UIView?
-    var indexPath : IndexPath!
+    var view : UIView?
+    var position : Int = -1
     var isValid = false
+    
+    func reset() {
+        view = nil
+        position = -1
+        isValid = false
+    }
 }
