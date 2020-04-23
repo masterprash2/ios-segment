@@ -26,7 +26,7 @@ open class PASectionDatasource : ViewInteractor {
             runnable()
         }
         else {
-            DispatchQueue.main.async {
+            DispatchQueue.main.sync {
                 runnable()
             }
         }
