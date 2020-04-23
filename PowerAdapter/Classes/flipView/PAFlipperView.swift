@@ -249,12 +249,14 @@ public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
         if setNextViewOnCompletion {
             current.view?.removeFromSuperview()
             if(flipDirection == .FlipDirectionBottom) {
+                unloadPage(nextPage)
                 copyPage(current, to: nextPage)
                 copyPage(previous, to: current)
                 currentPageIndex = current.position
                 delegate?.flipperView(self, current: current.view!, at: current.position)
                 initPage(previous, with: previous.position - 1)
             } else {
+                unloadPage(previous)
                 copyPage(current, to: previous)
                 copyPage(nextPage, to: current)
                 currentPageIndex = current.position
