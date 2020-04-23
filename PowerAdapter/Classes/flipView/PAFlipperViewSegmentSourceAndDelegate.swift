@@ -8,7 +8,11 @@
 import Foundation
 import RxSwift
 
-public class PAFlipperViewPageSourceAndDelegate : PAFlipperViewDataSource, PAFlipperViewPageDelegate  {
+public protocol PAFlipperPageChangeDelegate : AnyObject {
+    func onPageChanged(_ flipperView : PAFlipperView, pageIndex: Int)
+}
+
+public class PAFlipperViewPageSourceAndDelegate : PAFlipperViewDataSource, PAFlipperViewPageDelegate, ViewInteractor  {
     
     private let viewProvider : PASegmentViewProvider
     private let itemSource : PAItemControllerSource
@@ -16,16 +20,16 @@ public class PAFlipperViewPageSourceAndDelegate : PAFlipperViewDataSource, PAFli
     private let parentLifecycle : PALifecycle
     weak var flipperView : PAFlipperView?
     private var currentPage : Int = 0
-    public weak var pageChangeDelegate : PAFlipperViewPageDelegate?
+    public weak var pageChangeDelegate : PAFlipperPageChangeDelegate?
     private weak var parent : PAParent?
     private var primaryItem : PASegmentView?
-    
-    
+        
     public init(_ viewProvider : PASegmentViewProvider, _ itemSource : PAItemControllerSource, _ parent : PAParent) {
         self.viewProvider = viewProvider
         self.itemSource = itemSource
         self.parent = parent
         self.parentLifecycle = parent.getLifecycle()
+        itemSource.viewInteractor = self
     }
     
     public func bind(_ flipperView : PAFlipperView) {
@@ -33,7 +37,9 @@ public class PAFlipperViewPageSourceAndDelegate : PAFlipperViewDataSource, PAFli
         self.flipperView = flipperView
         flipperView.delegate = self
         flipperView.dataSource = self
-        self.itemSource.observeAdapterUpdates().map {[weak flipperView,weak self] (update) -> Bool in
+        
+        self.itemSource.observeAdapterUpdates()
+            .map {[weak flipperView,weak self] (update) -> Bool in
             if(flipperView != nil) {
                 self?.performUpdate(flipperView!, update)
             }
@@ -47,7 +53,7 @@ public class PAFlipperViewPageSourceAndDelegate : PAFlipperViewDataSource, PAFli
             self.primaryItem?.viewDidDisappear()
             self.primaryItem = nil
             self.currentPage = 0
-            flipperView.dataSource = self
+            flipperView.reset()
         }
     }
     
@@ -106,8 +112,23 @@ public class PAFlipperViewPageSourceAndDelegate : PAFlipperViewDataSource, PAFli
         itemSource.onDetached()
     }
     
+}
 
-    
-    
-    
+
+extension PAFlipperViewPageSourceAndDelegate {
+    public func processWhenSafe(_ runnable: @escaping () -> Void) {
+          if(Thread.isMainThread) {
+              runnable()
+          }
+          else {
+              DispatchQueue.main.sync {
+                  runnable()
+              }
+          }
+      }
+      
+      public func cancelOldProcess(_ runnable: () -> Void) {
+          
+      }
+      
 }

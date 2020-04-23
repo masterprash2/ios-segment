@@ -63,23 +63,40 @@ public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
             unloadAllPages()
         }
         didSet {
-            numberOfPages = self.dataSource!.numberOfPagesinFlipper(self)
+            numberOfPages = 0
             currentPageIndex = -1
             flipToPageIndex = 0
             lastPageNotificationIndex = -1
             //pagecontrol current page
             DispatchQueue.main.async {
+                self.numberOfPages = self.dataSource!.numberOfPagesinFlipper(self)
                 self.setFirstPage()
             }
         }
     }
     
+    func reset() {
+        unloadAllPages()
+        numberOfPages = 0
+        currentPageIndex = -1
+        flipToPageIndex = 0
+        lastPageNotificationIndex = -1
+        DispatchQueue.main.async {
+            self.numberOfPages = self.dataSource!.numberOfPagesinFlipper(self)
+            self.setFirstPage()
+        }
+    }
     
     weak var delegate : PAFlipperViewPageDelegate?
+    
     
     //#pragma init method
     public override init(frame: CGRect) {
         super.init(frame: frame)
+        setupGestures()
+    }
+    
+    private func setupGestures() {
         tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapped(_:)))
         panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(panned(_:)))
         panRecognizer?.delegate = self
@@ -392,7 +409,7 @@ public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
     }
     
     func canSetCurrentPage(_ page: Int) -> Bool {
-        if page == currentPageIndex {
+        if (page == currentPageIndex || page >= numberOfPages) {
             return false
         }
         

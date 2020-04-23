@@ -151,6 +151,7 @@ public class PAMultiplexSource : PAProxySource {
             adapterAsItem.startPosition = nextsourcestartPosition
             nextsourcestartPosition = adapterAsItem.startPosition + adapterAsItem.adapter.itemCount
         }
+        updateIndexes(remove)
         beginUpdates()
         notifyItemsRemoved(removePositionStart, remove.adapter.itemCount)
         endUpdates()

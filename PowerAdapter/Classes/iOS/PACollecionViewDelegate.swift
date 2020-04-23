@@ -107,16 +107,16 @@ open class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UIColl
         return arr
     }
     
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.sections.numberOfRowsInSection(section)
     }
     
     
-    public func numberOfSections(in collectionView: UICollectionView) -> Int {
+    open func numberOfSections(in collectionView: UICollectionView) -> Int {
         return sections.count()
     }
     
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let item = itemAtIndexPath(indexPath)
         let cell = self.cellProvider.cellForController(collectionView, item.controller, indexPath)
         let paTableCell = (cell as! PACollectionViewCell)
