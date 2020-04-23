@@ -10,8 +10,6 @@ import RxSwift
 
 public class PAFlipperViewPageSourceAndDelegate : PAFlipperViewDataSource, PAFlipperViewPageDelegate  {
     
-    
-    
     private let viewProvider : PASegmentViewProvider
     private let itemSource : PAItemControllerSource
     private let disposeBag = DisposeBag()
@@ -37,11 +35,20 @@ public class PAFlipperViewPageSourceAndDelegate : PAFlipperViewDataSource, PAFli
         flipperView.dataSource = self
         self.itemSource.observeAdapterUpdates().map {[weak flipperView,weak self] (update) -> Bool in
             if(flipperView != nil) {
-                //                self?.performUpdate(tableView!, update)
+                self?.performUpdate(flipperView!, update)
             }
             return true
         }.subscribe().disposed(by: disposeBag)
         self.itemSource.onAttached()
+    }
+    
+    private func performUpdate(_ flipperView : PAFlipperView, _ update : PASourceUpdateEventModel) {
+        if(update.type == .updateEnds) {
+            self.primaryItem?.viewDidDisappear()
+            self.primaryItem = nil
+            self.currentPage = 0
+            flipperView.dataSource = self
+        }
     }
     
     
@@ -57,11 +64,6 @@ public class PAFlipperViewPageSourceAndDelegate : PAFlipperViewDataSource, PAFli
         return  self.itemSource.itemCount
     }
     
-    func viewForPage(_ flipper: PAFlipperView, _ page: Int) -> UIView {
-        let pageController = itemAtIndexPath(page)
-        return viewProvider.segmentViewForType(flipper, pageController.type())
-    }
-    
     
     public func flipperView(_ flipperView : PAFlipperView, loadPageAt index: Int) -> UIView {
         let item = itemAtIndexPath(index)
@@ -71,38 +73,9 @@ public class PAFlipperViewPageSourceAndDelegate : PAFlipperViewDataSource, PAFli
     }
     
     
-    public func flipperView(_ flipperView: PAFlipperView, willDisplay page: UIView, at index: Int) {
-        if(self.currentPage == index) {
-            let tableCell = page as! PASegmentView
-            tableCell.viewWillAppear()
-            self.primaryItem = tableCell
-        }
-    }
-    
-    public func flipperView(_ flipperView : PAFlipperView, didEndDisplaying page: UIView, at index: Int) {
-        let tableCell = page as! PASegmentView
-        tableCell.viewDidDisappear()
-        if(self.currentPage == index) {
-            self.currentPage = -1
-            self.primaryItem = nil
-        }
-    }
-    
     public func flipperView(_ flipperView: PAFlipperView, willUnload page: UIView, at index: Int) {
         let tableCell = page as! PASegmentView
         tableCell.unBindInternal()
-    }
-    
-    
-    public func itemAtIndexPath(_ index: Int) -> PAItemController {
-        return self.itemSource.getItem(index)
-    }
-    
-    
-    
-    func unBind() {
-        self.flipperView = nil
-        itemSource.onDetached()
     }
     
     public func flipperView(_ flipperView: PAFlipperView, current page: UIView, at index: Int) {
@@ -120,6 +93,20 @@ public class PAFlipperViewPageSourceAndDelegate : PAFlipperViewDataSource, PAFli
     public func onPageChanged(_ flipperView: PAFlipperView, pageIndex: Int) {
         self.pageChangeDelegate?.onPageChanged(flipperView, pageIndex: pageIndex)
     }
+    
+    
+    public func itemAtIndexPath(_ index: Int) -> PAItemController {
+        return self.itemSource.getItem(index)
+    }
+    
+    
+    
+    func unBind() {
+        self.flipperView = nil
+        itemSource.onDetached()
+    }
+    
+
     
     
     

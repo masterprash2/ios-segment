@@ -59,6 +59,9 @@ public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
     private var nextViewPage : Page?
     
     weak var dataSource : PAFlipperViewDataSource? {
+        willSet {
+            unloadAllPages()
+        }
         didSet {
             numberOfPages = self.dataSource!.numberOfPagesinFlipper(self)
             currentPageIndex = -1
@@ -87,6 +90,11 @@ public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
         super.init(coder: coder)
     }
     
+    private func unloadAllPages() {
+        unloadPage(previous)
+        unloadPage(current)
+        unloadPage(nextPage)
+    }
     
     func initFlip() {
         
@@ -316,6 +324,7 @@ public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
     }
     
     public func setCurrentPage(_ page: Int, animated: Bool) {
+        flipToPageIndex = page
         if !canSetCurrentPage(page) {
             return
         }
