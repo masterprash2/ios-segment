@@ -730,7 +730,7 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
 
 // MARK: - Internal
     func evaluateTabTitles() -> [AnyHashable]? {
-        let tabTitles = dataSource!.tabTitles(for: self)
+        let tabTitles = dataSource?.tabTitles(for: self)
         return tabTitles
     }
 
