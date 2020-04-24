@@ -15,6 +15,7 @@ class TableSegmentController: PAController {
     var pageSource : PAItemControllerSource!
     
     let sectionSource = PASectionDatasource()
+    let tabsSource = PAArraySource()
     
     func getType() -> Int {
         return 1
@@ -25,9 +26,14 @@ class TableSegmentController: PAController {
     }
     
     func onCreate(_ itemUpdatePublisher: PAItemUpdatePublisher) {
+        tabsSource.setItems(createItems())
         let arraySource = PAArraySource()
         arraySource.setItems(self.createItems())
         pageSource = arraySource
+    }
+    
+    func getTabsSource() -> PAArraySource {
+        return tabsSource
     }
     
     func onViewDidLoad() {

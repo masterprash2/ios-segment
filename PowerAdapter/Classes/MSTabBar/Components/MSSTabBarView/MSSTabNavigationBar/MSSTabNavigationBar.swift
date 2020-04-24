@@ -11,6 +11,14 @@ let kMSSTabNavigationBarLayoutParameterInvalid: CGFloat = -1.0
 let kMSSTabNavigationBarBottomPadding: CGFloat = 4.0
 
 class MSSTabNavigationBar: MSSCustomHeightNavigationBar, MSSTabBarViewDelegate, MSSTabBarViewDataSource {
+    func tabTitles(for tabBarView: MSSTabBarView) -> [String]? {
+        return nil
+    }
+    
+    func tabBarView(_ tabBarView: MSSTabBarView, tabSelectedAt index: Int) {
+        
+    }
+    
     
     var tabBarRequired: Bool = false {
         didSet {

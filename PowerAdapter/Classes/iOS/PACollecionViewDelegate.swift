@@ -17,7 +17,7 @@ open class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UIColl
     private let disposeBag = DisposeBag()
     private let parentLifecycle : PALifecycle
     private weak var parent : PAParent?
-    weak var collectionView : UICollectionView?
+    public private(set) weak var collectionView : UICollectionView?
     private var updates = [(Int, PASourceUpdateEventModel)]()
     
     public private(set) var totalNumberOfRowsInAllSections : Int = 0
@@ -59,8 +59,12 @@ open class PACollectionViewDelegate : NSObject, UICollectionViewDelegate, UIColl
             self.sections.invalidateContentCount()
             }
         updateTotalRows()
+        updateEnds()
         default : updates.append(update)
         }
+    }
+    
+    open func updateEnds() {
         
     }
     

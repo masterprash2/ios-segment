@@ -8,6 +8,7 @@
 import Foundation
 
 public protocol PACollectionViewPageDelegate : AnyObject {
+    func currentPage(_ collectionView : UICollectionView, current page: IndexPath)
     func onPageChanged(_ collectionView : UICollectionView, pagePath: IndexPath)
 }
 
@@ -52,7 +53,13 @@ open class PACollectionPageViewDelegate: PACollectionViewDelegate, UICollectionV
                 }
             }
         }
-        
+    }
+    
+    open override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = super.collectionView(collectionView, cellForItemAt: indexPath)
+        cell.frame = CGRect.init(x: cell.frame.origin.x, y: cell.frame.origin.y,
+                                 width: collectionView.frame.width, height: collectionView.frame.height)
+        return cell
     }
     
     private func setCurrentPage(_ collectionView : UICollectionView, _ ip : IndexPath) {
@@ -62,8 +69,13 @@ open class PACollectionPageViewDelegate: PACollectionViewDelegate, UICollectionV
         let newCell = collectionView.cellForItem(at: self.currentPage)
         (newCell as? PACollectionViewCell)?.willDisplay()
         self.pageChangeDelegate?.onPageChanged(collectionView, pagePath: ip)
+        self.pageChangeDelegate?.currentPage(collectionView, current: ip)
+        currentPage(collectionView, current: ip)
     }
     
+    open func currentPage(_ collectionView : UICollectionView, current page: IndexPath) {
+        
+    }
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let size = CGSize(width: collectionView.frame.width, height: collectionView.frame.height)

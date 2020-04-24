@@ -90,7 +90,7 @@ public class MSSTabBarCollectionViewCell: UICollectionViewCell {
     }
 
     /// The style of the tab.
-    public var tabStyle: MSSTabStyle! {
+    var tabStyle: MSSTabStyle! {
         didSet {
             switch tabStyle {
                 case .imageAndText:

@@ -21,7 +21,6 @@ enum MSSIndicatorStyle : Int {
 
 //#pragma clang diagnostic push
 //#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-let MSSTabBarViewCellIdentifier = "MSSTabBarCollectionViewCell"
 // defaults
 let MSSTabBarViewDefaultHeight: CGFloat = 44.0
 let MSSTabBarViewDefaultTabIndicatorHeight: CGFloat = 2.0
@@ -55,7 +54,7 @@ private var _sizingCell: MSSTabBarCollectionViewCell?
     /// - Parameter tabBarView:
     /// The tab bar view.
     /// - Returns: The array of tab titles.
-    @objc optional func tabTitles(for tabBarView: MSSTabBarView) -> [String]?
+    func tabTitles(for tabBarView: MSSTabBarView) -> [String]?
     /// The default tab index to to display in the tab bar.
     /// - Parameter tabBarView:
     /// The tab bar view.
@@ -71,7 +70,7 @@ private var _sizingCell: MSSTabBarCollectionViewCell?
     /// The tab bar view.
     ///   - index:
     /// The index of the selected tab.
-    @objc optional func tabBarView(_ tabBarView: MSSTabBarView, tabSelectedAt index: Int)
+    func tabBarView(_ tabBarView: MSSTabBarView, tabSelectedAt index: Int)
 }
 
 public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -85,7 +84,7 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
     }
     /// The object that acts as the data source for the tab bar.
 
-    @IBOutlet weak var dataSource: MSSTabBarViewDataSource? {
+    @IBOutlet public weak var dataSource: MSSTabBarViewDataSource? {
         didSet {
             animateDataSourceTransition = false
             reset()
@@ -98,7 +97,7 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
         }
     }
     /// The object that acts as a delegate for the tab bar.
-    @IBOutlet weak var delegate: MSSTabBarViewDelegate?
+    @IBOutlet public weak var delegate: MSSTabBarViewDelegate?
     /// The number of tabs in the tab bar.
     private(set) var tabCount = 0
     /// Whether the tab bar is currently animating a tab change transition.
@@ -273,6 +272,8 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
     }
     private var hasRespectedDefaultTabIndex = false
     private var animateDataSourceTransition = false
+    
+    public var cellNibName : String = "MSSTabBarCollectionViewCell"
 
 // MARK: - Init
 
@@ -325,10 +326,8 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
             // create sizing cell if required
             let nibName = String(NSStringFromClass(MSSTabBarCollectionViewCell.self).split(separator: ".")[1])
             let cellNib = UINib(nibName:nibName , bundle: Bundle(for: MSSTabBarCollectionViewCell.self))
-            collectionView?.register(cellNib, forCellWithReuseIdentifier: MSSTabBarViewCellIdentifier)
-//            if _sizingCell == nil {
+            collectionView?.register(cellNib, forCellWithReuseIdentifier: cellNibName)
                 _sizingCell = cellNib.instantiate(withOwner: self, options: nil)[0] as? MSSTabBarCollectionViewCell
-//            }
 
             // collection view
             mss_addExpandingSubview(collectionView)
@@ -368,7 +367,7 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
 
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MSSTabBarViewCellIdentifier, for: indexPath) as? MSSTabBarCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellNibName, for: indexPath) as? MSSTabBarCollectionViewCell
         updateCellAppearance(cell)
 
         // default contents
@@ -431,7 +430,7 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 
 //        if delegate?.responds(to: #selector(MSSTabbedPageViewController.tabBarView(_:tabSelectedAt:))) ?? false {
-            delegate?.tabBarView?(self, tabSelectedAt: indexPath.row)
+        delegate!.tabBarView(self, tabSelectedAt: indexPath.row)
 //        }
     }
 
@@ -731,15 +730,15 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
 
 // MARK: - Internal
     func evaluateTabTitles() -> [AnyHashable]? {
-        let tabTitles = dataSource?.tabTitles?(for: self)
+        let tabTitles = dataSource!.tabTitles(for: self)
         return tabTitles
     }
 
     func evaluateDataSource() -> Int {
         var tabCount = 0
-//        if dataSource?.responds(to: #selector(MSSTabbedPageViewController.numberOfItems(for:))) ?? false {
-            tabCount = dataSource?.numberOfItems(for: self) ?? 0
-//        } else if dataSource?.responds(to: #selector(MSSTabBarViewDataSource.tabTitles(for:))) ?? false {
+////        if dataSource?.responds(to: #selector(MSSTabbedPageViewController.numberOfItems(for:))) ?? false {
+//            tabCount = dataSource?.numberOfItems(for: self) ?? 0
+////        } else if dataSource?.responds(to: #selector(MSSTabBarViewDataSource.tabTitles(for:))) ?? false {
 
             tabTitles = evaluateTabTitles()
             tabCount = tabTitles?.count ?? 0
@@ -766,7 +765,7 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
 
     
 
-    func reloadData() {
+    public func reloadData() {
         if tabOffset == MSSTabBarViewTabOffsetInvalid {
             hasRespectedDefaultTabIndex = false
         }

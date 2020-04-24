@@ -26,11 +26,10 @@ class TableSegmentView : PASegmentView, MSSTabBarViewDataSource {
         addSubview(self.tableView)
         setupTabBar()
         let controller = getController() as! TableSegmentController
-        tableDelegate = PageDelegateWithTabBar(TableCellProvider(), controller.sectionSource, self)
+        tableDelegate = PageDelegateWithTabBar(TableCellProvider(), controller.tabsSource, self, "MSSTabBarCollectionViewCell" )
         tableView.bounds = self.bounds
         tableView.backgroundColor = UIColor.yellow
-        tableDelegate.bind(self.tableView)
-        tableDelegate.tabBar = tabBar
+        tableDelegate.bind(self.tableView,tabBar)
     }
     
     private func setupTabBar() {

@@ -454,7 +454,7 @@ public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
     public override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         let translation = self.panRecognizer!.translation(in: self)
         let isVerticalPan = abs(translation.y) > abs(translation.x)
-        return isVerticalPan && gestureRecognizer === panRecognizer
+        return isVerticalPan && (translation.y < 0.0 || current.position > 0 )  && gestureRecognizer === panRecognizer
     }
     
     
