@@ -488,11 +488,7 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
 
     
     override public var tintColor: UIColor! {
-        get {
-            return super.tintColor
-        }
-        set(tintColor) {
-            super.tintColor = tintColor
+        didSet {
             tabIndicatorColor = tintColor
         }
     }
@@ -781,30 +777,26 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
 
         // default appearance
         if tabAttributes != nil {
-            var tabTextColor: UIColor?
-            if (tabTextColor = tabAttributes![MSSTabTextColor] as? UIColor) != nil || (tabTextColor = tabAttributes![NSAttributedString.Key.foregroundColor.rawValue] as? UIColor) != nil {
+            if let tabTextColor = tabAttributes![MSSTabTextColor] as? UIColor ??  tabAttributes![NSAttributedString.Key.foregroundColor.rawValue] as? UIColor {
 
                 cell?.textColor = tabTextColor
             }
 
-            var tabTextFont: UIFont?
-            if (tabTextFont = tabAttributes![MSSTabTextFont] as? UIFont) != nil || (tabTextFont = tabAttributes![NSAttributedString.Key.font.rawValue] as? UIFont) != nil {
+            if let tabTextFont = tabAttributes![MSSTabTextFont] as? UIFont ??  tabAttributes![NSAttributedString.Key.font.rawValue] as? UIFont {
                 cell?.textFont = tabTextFont
             }
 
-            var tabBackgroundColor: UIColor?
-            if (tabBackgroundColor = tabAttributes![NSAttributedString.Key.backgroundColor.rawValue] as? UIColor) != nil {
+            if let tabBackgroundColor = tabAttributes![NSAttributedString.Key.backgroundColor.rawValue] as? UIColor {
                 cell?.tabBackgroundColor = tabBackgroundColor
             }
 
-            var alphaEffectEnabled: NSNumber?
-            if (alphaEffectEnabled = tabAttributes![MSSTabTransitionAlphaEffectEnabled] as? NSNumber) != nil {
-                cell?.alphaEffectEnabled = alphaEffectEnabled?.boolValue ?? false
+            if let alphaEffectEnabled = tabAttributes![MSSTabTransitionAlphaEffectEnabled] as? NSNumber {
+                cell?.alphaEffectEnabled = alphaEffectEnabled.boolValue
             }
 
-            var deselectedAlphaValue: NSNumber?
-            if (deselectedAlphaValue = tabAttributes![MSSTabTitleAlpha] as? NSNumber) != nil {
-                _tabDeselectedAlpha = CGFloat(deselectedAlphaValue?.floatValue ?? 0.0)
+            
+            if let deselectedAlphaValue = tabAttributes![MSSTabTitleAlpha] as? NSNumber {
+                _tabDeselectedAlpha = CGFloat(deselectedAlphaValue.floatValue )
             }
         } else {
             cell?.textColor = self.tabTextColor
@@ -815,20 +807,17 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
 
         // selected appearance
         if (selectedTabAttributes != nil) {
-            var selectedTabTextColor: UIColor?
-            if (selectedTabTextColor = selectedTabAttributes![MSSTabTextColor] as? UIColor) != nil || (selectedTabTextColor = selectedTabAttributes![NSAttributedString.Key.foregroundColor.rawValue] as? UIColor) != nil {
+            if let selectedTabTextColor = selectedTabAttributes![MSSTabTextColor] as? UIColor ??  selectedTabAttributes![NSAttributedString.Key.foregroundColor.rawValue] as? UIColor {
 
                 cell?.selectedTextColor = selectedTabTextColor
             }
 
-            var selectedTabTextFont: UIFont?
-            if (selectedTabTextFont = selectedTabAttributes![MSSTabTextFont] as? UIFont) != nil || (selectedTabTextFont = selectedTabAttributes![NSAttributedString.Key.font.rawValue] as? UIFont) != nil {
+            if let selectedTabTextFont = selectedTabAttributes![MSSTabTextFont] as? UIFont ??  selectedTabAttributes![NSAttributedString.Key.font.rawValue] as? UIFont {
 
                 cell?.selectedTextFont = selectedTabTextFont
             }
 
-            var selectedTabBackgroundColor: UIColor?
-            if (selectedTabBackgroundColor = selectedTabAttributes![NSAttributedString.Key.backgroundColor.rawValue] as? UIColor) != nil {
+            if let selectedTabBackgroundColor = selectedTabAttributes![NSAttributedString.Key.backgroundColor.rawValue] as? UIColor {
                 cell?.selectedTabBackgroundColor = selectedTabBackgroundColor
             }
         }
@@ -853,8 +842,7 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
                 indicatorContainer?.addSubview(imageView)
 
                 indicatorView = imageView
-            default:
-                break
+
         }
 
         self.indicatorView = indicatorView
@@ -867,25 +855,21 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
             switch indicatorStyle {
                 case .line:
 
-                    var indicatorColor: UIColor?
-                    if (indicatorColor = indicatorAttributes![NSAttributedString.Key.foregroundColor.rawValue] as? UIColor) != nil {
+                    if let indicatorColor = indicatorAttributes![NSAttributedString.Key.foregroundColor.rawValue] as? UIColor {
                         indicatorView?.backgroundColor = indicatorColor
                     }
 
-                    var indicatorHeight: NSNumber?
-                    if (indicatorHeight = indicatorAttributes![MSSTabIndicatorLineHeight] as? NSNumber) != nil {
-                        lineIndicatorHeight = CGFloat(indicatorHeight?.floatValue ?? 0.0)
+                    if let indicatorHeight = indicatorAttributes![MSSTabIndicatorLineHeight] as? NSNumber {
+                        lineIndicatorHeight = CGFloat(indicatorHeight.floatValue )
                     }
                 case .image:
                     let indicatorImageView = indicatorView as? UIImageView
 
-                    var indicatorImage: UIImage?
-                    if (indicatorImage = indicatorAttributes![MSSTabIndicatorImage] as? UIImage) != nil {
-                        indicatorImageView?.image = indicatorImage?.withRenderingMode(.alwaysTemplate)
+                    if let indicatorImage = indicatorAttributes![MSSTabIndicatorImage] as? UIImage {
+                        indicatorImageView?.image = indicatorImage.withRenderingMode(.alwaysTemplate)
                     }
 
-                    var indicatorTintColor: UIColor?
-                    if (indicatorTintColor = indicatorAttributes![MSSTabIndicatorImageTintColor] as? UIColor) != nil {
+                    if let indicatorTintColor = indicatorAttributes![MSSTabIndicatorImageTintColor] as? UIColor {
                         indicatorImageView?.tintColor = indicatorTintColor
                     }
                 default:
