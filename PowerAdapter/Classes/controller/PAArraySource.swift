@@ -175,10 +175,6 @@ open class PAArraySource : PAItemControllerSource {
     override func onDetached() {
         disposeBag = nil
         isAttached = false
-        for cn in controllers {
-            cn.performDestroy()
-        }
     }
-    
     
 }

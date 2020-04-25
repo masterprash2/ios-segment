@@ -135,10 +135,7 @@ public class PAFlipperViewPageSourceAndDelegate : PAFlipperViewDataSource, PAFli
         currentPage = 0
         pageChangeDelegate = nil
     }
-    
-    deinit {
-        NSLog("Deinit")
-    }
+
     
 }
 
