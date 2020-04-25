@@ -307,10 +307,13 @@ public class PAFlipperView : UIView, UIGestureRecognizerDelegate {
             return
         }
         if(lastPageNotificationIndex != currentPageIndex) {
+            let canNotify = lastPageNotificationIndex >= 0
             lastPageNotificationIndex = currentPageIndex
             let index = currentPageIndex
-            DispatchQueue.main.async {
-                self.delegate?.onPageChanged(self, pageIndex: index)
+            if(canNotify) {
+                DispatchQueue.main.async {
+                    self.delegate?.onPageChanged(self, pageIndex: index)
+                }
             }
         }
     }
