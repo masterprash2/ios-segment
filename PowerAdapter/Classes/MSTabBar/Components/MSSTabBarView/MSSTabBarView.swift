@@ -196,15 +196,19 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
     ///   - animated:
     /// Animate the tab index transition.
     public func setTabIndex(_ index: Int, animated: Bool) {
-        if animated {
-            animatingTabChange = true
-            UIView.animate(withDuration: 0.25, animations: {
+        collectionView?.scrollToItem(at: IndexPath(row: index, section: 0), at: .centeredHorizontally, animated: false)
+        DispatchQueue.main.async {
+            if animated {
+                self.animatingTabChange = true
+                UIView.animate(withDuration: 0.25, animations: {
+                    self.updateTabBar(forTabIndex: index)
+                }) { finished in
+                    self.animatingTabChange = false
+                }
+            } else {
                 self.updateTabBar(forTabIndex: index)
-            }) { finished in
-                self.animatingTabChange = false
             }
-        } else {
-            updateTabBar(forTabIndex: index)
+            
         }
     }
 
@@ -433,7 +437,7 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
         delegate!.tabBarView(self, tabSelectedAt: indexPath.row)
 //        }
     }
-
+    
 // MARK: - Public
     func setTabPadding(_ tabPadding: CGFloat) {
         self.tabPadding = tabPadding
