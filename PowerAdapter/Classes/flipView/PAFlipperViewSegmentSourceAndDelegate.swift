@@ -16,7 +16,7 @@ public class PAFlipperViewPageSourceAndDelegate : PAFlipperViewDataSource, PAFli
     
     private let viewProvider : PASegmentViewProvider
     private let itemSource : PAItemControllerSource
-    private let disposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
     private let parentLifecycle : PALifecycle
     weak var flipperView : PAFlipperView?
     private var currentPage : Int = 0
@@ -37,7 +37,7 @@ public class PAFlipperViewPageSourceAndDelegate : PAFlipperViewDataSource, PAFli
         self.flipperView = flipperView
         flipperView.delegate = self
         flipperView.dataSource = self
-        
+        observeLifecycle()
         self.itemSource.observeAdapterUpdates()
             .map {[weak flipperView,weak self] (update) -> Bool in
             if(flipperView != nil) {
@@ -46,6 +46,24 @@ public class PAFlipperViewPageSourceAndDelegate : PAFlipperViewDataSource, PAFli
             return true
         }.subscribe().disposed(by: disposeBag)
         self.itemSource.onAttached()
+    }
+    
+    private func observeLifecycle() {
+        parentLifecycle.observeViewState().map {[weak self] (state) -> Bool in
+            self?.syncLifecycle()
+            return true
+        }.subscribe().disposed(by: disposeBag)
+    }
+    
+    private func syncLifecycle() {
+        switch parentLifecycle.viewState {
+        case .resume:
+            primaryItem?.viewWillAppear()
+            
+        case .paused:
+            primaryItem?.viewDidDisappear()
+        default : return
+        }
     }
     
     private func performUpdate(_ flipperView : PAFlipperView, _ update : PASourceUpdateEventModel) {
@@ -90,9 +108,9 @@ public class PAFlipperViewPageSourceAndDelegate : PAFlipperViewDataSource, PAFli
             oldCell?.viewDidDisappear()
             self.currentPage = index
             let newCell = page as! PASegmentView
-            newCell.viewWillAppear()
             self.primaryItem = newCell
         }
+        syncLifecycle()
     }
     
     
@@ -108,8 +126,18 @@ public class PAFlipperViewPageSourceAndDelegate : PAFlipperViewDataSource, PAFli
     
     
     func unBind() {
+        self.flipperView?.delegate = nil
+        self.flipperView?.dataSource = nil
         self.flipperView = nil
         itemSource.onDetached()
+        disposeBag = DisposeBag()
+        self.primaryItem = nil
+        currentPage = 0
+        pageChangeDelegate = nil
+    }
+    
+    deinit {
+        NSLog("Deinit")
     }
     
 }

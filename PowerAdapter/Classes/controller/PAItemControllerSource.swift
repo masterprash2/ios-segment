@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 
 
-public protocol ViewInteractor {
+public protocol ViewInteractor : AnyObject {
     func processWhenSafe(_ runnable: @escaping () -> Void)
     func cancelOldProcess(_ runnable: @escaping () -> Void)
 }
@@ -23,7 +23,7 @@ public protocol ViewInteractor {
     private var maxCount = -1
     private var hasMaxLimit = false
 
-    open var viewInteractor: ViewInteractor?
+    weak var viewInteractor: ViewInteractor?
 
     private var lastItem: PAItemController?
     //    ItemControllerSource<Item,Controller> getRootAdapter(int position);

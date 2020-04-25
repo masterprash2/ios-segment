@@ -93,7 +93,7 @@ public class PAItemController : DiffAware, Hashable {
     func performResume() {
         performViewDidLoad()
         switch (state) {
-            case .VIEW_DID_LOAD : do {
+        case .VIEW_DID_LOAD,.PAUSE : do {
                 performViewDidLoad()
                 self.state = .RESUME
                 self.controller.onViewWillAppear()
