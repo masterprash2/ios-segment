@@ -14,7 +14,7 @@ public protocol PACollectionViewPageDelegate : AnyObject {
 
 open class PACollectionPageViewDelegate: PACollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
-    private var currentPage : IndexPath = IndexPath.init(row: 0, section: 0)
+    public private(set) var currentPage : IndexPath = IndexPath.init(row: 0, section: 0)
     
     public weak var pageChangeDelegate : PACollectionViewPageDelegate?
     
