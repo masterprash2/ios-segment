@@ -24,7 +24,7 @@ open class PASegmentView : UIView, PAParent {
     
     private var isBounded = false
     
-    private let lifecycleRegistry = PALifecycleRegistry()
+    private let lifecycleRegistry = PALifecycleRegistry(nil)
     private var disposeBag = DisposeBag()
     
     private weak var parent : PAParent?
