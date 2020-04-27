@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol PACollectionViewPageDelegate : AnyObject {
+public protocol PACollectionViewPageChangeDelegate : AnyObject {
     func currentPage(_ collectionView : UICollectionView, current page: IndexPath)
     func onPageChanged(_ collectionView : UICollectionView, pagePath: IndexPath)
 }
@@ -16,7 +16,7 @@ open class PACollectionPageViewDelegate: PACollectionViewDelegate, UICollectionV
     
     public private(set) var currentPage : IndexPath = IndexPath.init(row: 0, section: 0)
     
-    public weak var pageChangeDelegate : PACollectionViewPageDelegate?
+    public weak var pageChangeDelegate : PACollectionViewPageChangeDelegate?
     
     override open func bind(_ collectionView: UICollectionView) {
         collectionView.isPagingEnabled = true
