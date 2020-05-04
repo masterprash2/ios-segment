@@ -9,12 +9,12 @@
 
 import UIKit
 
-enum MSSTabTransitionStyle : Int {
+public enum MSSTabTransitionStyle : Int {
     case progressive
     case snap
 }
 
-enum MSSIndicatorStyle : Int {
+public enum MSSIndicatorStyle : Int {
     case line
     case image
 }
@@ -135,7 +135,7 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
     /// The sizing style to use for tabs in the tab bar.
     /// MSSTabSizingStyleSizeToFit - size tabs to the size of their contents.
     /// MSSTabSizingStyleDistributed - distribute the tabs equally in the frame of the tab bar (Max 5).
-    var sizingStyle: MSSTabSizingStyle = .sizeToFit
+    public var sizingStyle: MSSTabSizingStyle = .sizeToFit
     /// The style for tabs in the tab bar.
     /// MSSTabStyleImage - use images as the content for each tab.
     /// MSSTabStyleText - use text as the content for each tab.
@@ -148,7 +148,7 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
     /// The style for the tab indicator.
     /// MSSIndicatorStyleLine - use a coloured line as the indicator (default).
     /// MSSIndicatorStyleImage - use an image as the indicator.
-     var indicatorStyle: MSSIndicatorStyle!
+    public  var indicatorStyle: MSSIndicatorStyle!
     /// The appearance attributes for tabs.
     /// Available attributes:
     /// NSForegroundColorAttributeName, NSFontAttributeName, NSBackgroundColorAttributeName
@@ -160,9 +160,9 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
     /// The appearance attributes for the tab indicator.
     public var indicatorAttributes: [String : Any]?
     /// The transition style for the tabs to use during transitioning.
-    var tabTransitionStyle: MSSTabTransitionStyle!
+    public var tabTransitionStyle: MSSTabTransitionStyle!
     /// The transition style for the tab indicator to use during transitioning.
-    var indicatorTransitionStyle: MSSTabTransitionStyle = .progressive
+    public var indicatorTransitionStyle: MSSTabTransitionStyle = .progressive
     /// Whether the tab bar contents can be scrolled.
 
     public var userScrollEnabled: Bool {
@@ -174,15 +174,15 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
         }
     }
     /// The transition style for the selection indicator to use during transitioning.
-    var selectionIndicatorTransitionStyle: MSSTabTransitionStyle!
+    public var selectionIndicatorTransitionStyle: MSSTabTransitionStyle!
     /// The height of the selection indicator.
-    var selectionIndicatorHeight: CGFloat!
+    public var selectionIndicatorHeight: CGFloat!
     /// The color of the tab selection indicator.
-     var tabIndicatorColor: UIColor?
+    public  var tabIndicatorColor: UIColor?
     /// The text color of the tabs.
-     var tabTextColor: UIColor?
+     public var tabTextColor: UIColor?
     /// The font used for the tabs. A nil value uses the default font from the cell nib.
-     var tabTextFont: UIFont?
+     public var tabTextFont: UIFont?
 
     /// Initialize a tab bar with a specified height.
     /// - Parameter height:
