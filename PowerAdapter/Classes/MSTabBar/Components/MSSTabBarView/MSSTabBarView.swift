@@ -259,7 +259,7 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
     private var indicatorView: UIView?
 
     private var _lineIndicatorHeight: CGFloat = 0.0
-    private var lineIndicatorHeight: CGFloat {
+    public var lineIndicatorHeight: CGFloat {
         get {
             _lineIndicatorHeight
         }
