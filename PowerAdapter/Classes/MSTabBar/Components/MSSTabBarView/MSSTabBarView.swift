@@ -152,13 +152,21 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
     /// The appearance attributes for tabs.
     /// Available attributes:
     /// NSForegroundColorAttributeName, NSFontAttributeName, NSBackgroundColorAttributeName
-    public var tabAttributes: [String : Any]?
+    public var tabAttributes: [String : Any]? {
+        didSet {
+            reloadData()
+        }
+    }
     /// The appearance attributes for selected tabs.
     /// Available attributes:
     /// NSForegroundColorAttributeName, NSFontAttributeName, NSBackgroundColorAttributeName
     public var selectedTabAttributes: [String : Any]?
     /// The appearance attributes for the tab indicator.
-    public var indicatorAttributes: [String : Any]?
+    public var indicatorAttributes: [String : Any]? {
+        didSet {
+            updateIndicatorAppearance()
+        }
+    }
     /// The transition style for the tabs to use during transitioning.
     public var tabTransitionStyle: MSSTabTransitionStyle!
     /// The transition style for the tab indicator to use during transitioning.
@@ -178,11 +186,25 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
     /// The height of the selection indicator.
     public var selectionIndicatorHeight: CGFloat!
     /// The color of the tab selection indicator.
-    public  var tabIndicatorColor: UIColor?
+    public  var tabIndicatorColor: UIColor? {
+        didSet {
+            if indicatorStyle == .line {
+                indicatorView?.backgroundColor = tabIndicatorColor
+            }
+        }
+    }
     /// The text color of the tabs.
-     public var tabTextColor: UIColor?
+    public var tabTextColor: UIColor? {
+        didSet {
+            reloadData()
+        }
+    }
     /// The font used for the tabs. A nil value uses the default font from the cell nib.
-     public var tabTextFont: UIFont?
+    public var tabTextFont: UIFont? {
+        didSet {
+            reloadData()
+        }
+    }
 
     /// Initialize a tab bar with a specified height.
     /// - Parameter height:
@@ -459,27 +481,6 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
         collectionView?.contentInset = contentInset
     }
 
-    func setTabIndicatorColor(_ tabIndicatorColor: UIColor?) {
-        self.tabIndicatorColor = tabIndicatorColor
-        if indicatorStyle == .line {
-            indicatorView?.backgroundColor = tabIndicatorColor
-        }
-    }
-
-    func setSelectionIndicatorHeight(_ selectionIndicatorHeight: CGFloat) {
-        lineIndicatorHeight = selectionIndicatorHeight
-    }
-
-    func setTabTextColor(_ tabTextColor: UIColor?) {
-        self.tabTextColor = tabTextColor
-        reloadData()
-    }
-
-    func setTabTextFont(_ tabTextFont: UIFont?) {
-        self.tabTextFont = tabTextFont
-        reloadData()
-    }
-
     public func setSizingStyle(_ sizingStyle: MSSTabSizingStyle) {
         if (sizingStyle == .distributed && tabCount <= MSSTabBarViewMaxDistributedTabs) || sizingStyle == .sizeToFit {
             self.sizingStyle = sizingStyle
@@ -496,21 +497,7 @@ public class MSSTabBarView: UIView, UICollectionViewDataSource, UICollectionView
         }
     }
 
-    func setTabAttributes(_ tabAttributes: [String : Any]?) {
-        self.tabAttributes = tabAttributes
-        reloadData()
-    }
-
-    func setSelectionIndicatorTransitionStyle(_ selectionIndicatorTransitionStyle: MSSTabTransitionStyle) {
-        indicatorTransitionStyle = selectionIndicatorTransitionStyle
-    }
-
-    func setIndicatorAttributes(_ indicatorAttributes: [String : Any]?) {
-        self.indicatorAttributes = indicatorAttributes
-        updateIndicatorAppearance()
-    }
-
-    func setIndicatorStyle(_ indicatorStyle: MSSIndicatorStyle) {
+    public func setIndicatorStyle(_ indicatorStyle: MSSIndicatorStyle) {
         if indicatorStyle != self.indicatorStyle {
             self.indicatorStyle = indicatorStyle
             updateIndicator(for: indicatorStyle)
